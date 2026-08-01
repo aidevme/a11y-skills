@@ -1,0 +1,9 @@
+{
+  "name": "fluent-seeded-fixture",
+  "private": true,
+  "description": "Seeded-violation fixture for the rules-fluent-ui pack",
+  "dependencies": {
+    "@fluentui/react-components": "^9.0.0",
+    "react": "^18.0.0"
+  }
+}

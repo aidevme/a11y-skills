@@ -1,0 +1,8 @@
+{
+  "name": "react-clean-fixture",
+  "private": true,
+  "description": "Clean fixture for the rules-react pack — must produce zero findings (false-positive gate)",
+  "dependencies": {
+    "react": "^18.0.0"
+  }
+}

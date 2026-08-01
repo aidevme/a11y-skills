@@ -1,0 +1,8 @@
+{
+  "name": "react-devdep-fixture",
+  "private": true,
+  "description": "Detector fixture: react present only in devDependencies",
+  "devDependencies": {
+    "react": "^18.0.0"
+  }
+}

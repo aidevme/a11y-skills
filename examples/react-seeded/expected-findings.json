@@ -1,0 +1,11 @@
+[
+  { "ruleId": "react-alt-text", "file": "src/App.tsx", "line": 4, "severity": "error", "wcagRef": "1.1.1" },
+  { "ruleId": "react-anchor-is-valid", "file": "src/App.tsx", "line": 5, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "react-aria-props", "file": "src/App.tsx", "line": 9, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "react-aria-role", "file": "src/App.tsx", "line": 8, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "react-click-events-have-key-events", "file": "src/App.tsx", "line": 5, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "react-click-events-have-key-events", "file": "src/App.tsx", "line": 6, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "react-no-distracting-elements", "file": "src/App.tsx", "line": 10, "severity": "error", "wcagRef": "2.2.2" },
+  { "ruleId": "react-no-noninteractive-tabindex", "file": "src/App.tsx", "line": 7, "severity": "warning", "wcagRef": "2.4.3" },
+  { "ruleId": "react-tabindex-no-positive", "file": "src/App.tsx", "line": 7, "severity": "warning", "wcagRef": "2.4.3" }
+]

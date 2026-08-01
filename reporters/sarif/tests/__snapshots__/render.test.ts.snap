@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SARIF reporter (TC-P2.1) > golden snapshot 1`] = `
+"{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "@aidevme/a11y",
+          "informationUri": "https://github.com/aidevme/A11Y-skills",
+          "version": "0.0.1",
+          "rules": [
+            {
+              "id": "react-alt-text",
+              "shortDescription": {
+                "text": "react-alt-text (WCAG SC 1.1.1 Non-text Content)"
+              },
+              "helpUri": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html",
+              "properties": {
+                "wcagRef": "1.1.1",
+                "wcagLevel": "A",
+                "wcagVersion": "2.0",
+                "nonInterference": false
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "react-alt-text",
+          "level": "error",
+          "message": {
+            "text": "img elements must have an alt prop"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/App.tsx"
+                },
+                "region": {
+                  "startLine": 4,
+                  "startColumn": 7
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "a11yFingerprint/v1": "abc123"
+          },
+          "properties": {
+            "wcagRef": "1.1.1",
+            "nonInterference": false,
+            "baselined": false,
+            "surface": "web-app",
+            "layer": 1
+          }
+        }
+      ]
+    }
+  ]
+}"
+`;

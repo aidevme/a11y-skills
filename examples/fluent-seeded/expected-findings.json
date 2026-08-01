@@ -1,0 +1,8 @@
+[
+  { "ruleId": "fluent-button-accessible-name", "file": "src/App.tsx", "line": 20, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "fluent-dialog-aria-modal", "file": "src/App.tsx", "line": 21, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "fluent-field-label", "file": "src/App.tsx", "line": 23, "severity": "error", "wcagRef": "3.3.2" },
+  { "ruleId": "fluent-image-alt", "file": "src/App.tsx", "line": 19, "severity": "error", "wcagRef": "1.1.1" },
+  { "ruleId": "fluent-link-accessible-name", "file": "src/App.tsx", "line": 26, "severity": "error", "wcagRef": "2.4.4" },
+  { "ruleId": "fluent-spinner-label", "file": "src/App.tsx", "line": 22, "severity": "warning", "wcagRef": "4.1.2" }
+]

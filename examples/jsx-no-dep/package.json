@@ -1,0 +1,5 @@
+{
+  "name": "jsx-no-dep-fixture",
+  "private": true,
+  "description": "Detector fixture: .jsx files present but no react dependency (vendored React case)"
+}

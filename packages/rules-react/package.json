@@ -1,0 +1,21 @@
+{
+  "name": "@aidevme/a11y-rules-react",
+  "version": "0.0.1",
+  "description": "React (jsx-a11y) Layer 1 rule pack for the a11y-skills audit toolkit",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "rules-map.json"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-jsx-a11y": "^6.10.0"
+  }
+}

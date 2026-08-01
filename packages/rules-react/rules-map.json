@@ -1,0 +1,191 @@
+{
+  "alt-text": {
+    "ruleId": "react-alt-text",
+    "severity": "error",
+    "wcagRef": "1.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Images and media elements require alternative text."
+  },
+  "anchor-has-content": {
+    "ruleId": "react-anchor-has-content",
+    "severity": "error",
+    "wcagRef": "2.4.4",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Anchors must have discernible content."
+  },
+  "anchor-is-valid": {
+    "ruleId": "react-anchor-is-valid",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Anchors must be valid, navigable links; use a button for actions."
+  },
+  "aria-props": {
+    "ruleId": "react-aria-props",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "aria-* attributes must be valid ARIA properties."
+  },
+  "aria-role": {
+    "ruleId": "react-aria-role",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "role values must be valid ARIA roles."
+  },
+  "aria-unsupported-elements": {
+    "ruleId": "react-aria-unsupported-elements",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Elements that cannot carry ARIA (meta, script, style) must not have ARIA attributes."
+  },
+  "click-events-have-key-events": {
+    "ruleId": "react-click-events-have-key-events",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Clickable non-interactive elements need a keyboard handler."
+  },
+  "heading-has-content": {
+    "ruleId": "react-heading-has-content",
+    "severity": "error",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Headings must have discernible content."
+  },
+  "img-redundant-alt": {
+    "ruleId": "react-img-redundant-alt",
+    "severity": "warning",
+    "wcagRef": "1.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "alt text must not contain redundant words like \"image\" or \"picture\"."
+  },
+  "label-has-associated-control": {
+    "ruleId": "react-label-has-associated-control",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Labels must be associated with a form control (htmlFor or nesting)."
+  },
+  "media-has-caption": {
+    "ruleId": "react-media-has-caption",
+    "severity": "warning",
+    "wcagRef": "1.2.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "audio/video elements need captions."
+  },
+  "mouse-events-have-key-events": {
+    "ruleId": "react-mouse-events-have-key-events",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "onMouseOver/onMouseOut require onFocus/onBlur for keyboard users."
+  },
+  "no-access-key": {
+    "ruleId": "react-no-access-key",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "accessKey conflicts with screen reader and keyboard shortcuts."
+  },
+  "no-autofocus": {
+    "ruleId": "react-no-autofocus",
+    "severity": "warning",
+    "wcagRef": "2.4.3",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "autoFocus disorients screen reader and keyboard users."
+  },
+  "no-distracting-elements": {
+    "ruleId": "react-no-distracting-elements",
+    "severity": "error",
+    "wcagRef": "2.2.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "marquee/blink are distracting and cannot be paused (non-interference criterion)."
+  },
+  "no-noninteractive-tabindex": {
+    "ruleId": "react-no-noninteractive-tabindex",
+    "severity": "warning",
+    "wcagRef": "2.4.3",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Non-interactive elements should not be in the tab order."
+  },
+  "no-redundant-roles": {
+    "ruleId": "react-no-redundant-roles",
+    "severity": "warning",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Redundant explicit roles (e.g. role=\"button\" on button) add noise."
+  },
+  "role-has-required-aria-props": {
+    "ruleId": "react-role-has-required-aria-props",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Elements with an ARIA role must carry that role's required properties."
+  },
+  "role-supports-aria-props": {
+    "ruleId": "react-role-supports-aria-props",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "aria-* attributes must be supported by the element's role."
+  },
+  "scope": {
+    "ruleId": "react-scope",
+    "severity": "error",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "scope attribute is only valid on table header cells."
+  },
+  "tabindex-no-positive": {
+    "ruleId": "react-tabindex-no-positive",
+    "severity": "warning",
+    "wcagRef": "2.4.3",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Positive tabIndex breaks the natural focus order."
+  }
+}

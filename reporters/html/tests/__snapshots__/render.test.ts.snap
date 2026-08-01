@@ -1,0 +1,109 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`HTML reporter (TC-P2.2) > deterministic for identical input; golden snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accessibility Audit Report</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 0; color: #1a1a1a; background: #ffffff; line-height: 1.5; }
+header, main { max-width: 1100px; margin: 0 auto; padding: 1rem 1.5rem; }
+header { border-bottom: 2px solid #d0d0d0; }
+h1 { font-size: 1.5rem; margin: 0.5rem 0; }
+h2 { font-size: 1.2rem; margin-top: 2rem; }
+table { border-collapse: collapse; width: 100%; margin-top: 0.75rem; }
+caption { text-align: left; font-weight: 600; padding: 0.25rem 0; }
+th, td { border: 1px solid #c8c8c8; padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; font-size: 0.9rem; }
+th button { background: none; border: none; font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
+th button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #0b5394; outline-offset: 2px; }
+.badge { display: inline-block; padding: 0 0.4rem; border-radius: 3px; font-size: 0.8rem; font-weight: 700; }
+.sev-error { background: #fbe4e4; color: #7a0c0c; }
+.sev-warning { background: #fdf3d7; color: #6a4b00; }
+.sev-info { background: #e2ecf7; color: #0b3a66; }
+.baselined-row { background: #f4f4f4; }
+.baselined-tag { font-size: 0.75rem; color: #444444; font-style: italic; }
+.ni { font-weight: 700; color: #7a0c0c; }
+.controls { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; align-items: end; }
+.controls div { display: flex; flex-direction: column; }
+code { background: #f0f0f0; padding: 0 0.25rem; font-size: 0.85em; }
+.verdict-pass { color: #1d5e2b; font-weight: 700; }
+.verdict-fail { color: #7a0c0c; font-weight: 700; }
+.summary-grid { display: flex; gap: 2rem; flex-wrap: wrap; }
+a { color: #0b5394; }
+</style>
+</head>
+<body>
+<header>
+<h1>Accessibility Audit Report</h1>
+<p>Profile: <strong>standard</strong> · WCAG 2.2 · fail on: error · generated 2026-08-01T00:00:00.000Z</p>
+<p>Verdict: <span class="verdict-fail">Fail</span> —
+1 error(s), 0 warning(s), 0 info.</p>
+</header>
+<main>
+<section aria-labelledby="summary-h"><h2 id="summary-h">Summary</h2>
+<div class="summary-grid">
+<table><caption>By severity (new findings)</caption><thead><tr><th scope="col">Severity</th><th scope="col">Count</th></tr></thead>
+<tbody><tr><td>error</td><td>1</td></tr><tr><td>warning</td><td>0</td></tr><tr><td>info</td><td>0</td></tr><tr><td>baselined</td><td>0</td></tr></tbody></table>
+<table><caption>By WCAG success criterion (all findings)</caption><thead><tr><th scope="col">Criterion</th><th scope="col">Count</th></tr></thead><tbody><tr><td>SC 1.1.1 Non-text Content</td><td>1</td></tr></tbody></table>
+</div></section>
+
+
+
+<section aria-labelledby="findings-h"><h2 id="findings-h">Findings</h2>
+<div class="controls">
+<div><label for="filter-severity">Filter by severity</label>
+<select id="filter-severity"><option value="all">All</option><option value="error">Error</option><option value="warning">Warning</option><option value="info">Info</option></select></div>
+<div><label for="filter-text">Search findings</label><input type="search" id="filter-text"></div>
+</div><p id="filter-status" role="status"></p>
+<table><caption>All findings</caption><thead><tr><th scope="col"><button type="button" data-col="0">Severity</button></th><th scope="col"><button type="button" data-col="1">Rule</button></th><th scope="col"><button type="button" data-col="2">WCAG</button></th><th scope="col"><button type="button" data-col="3">Location</button></th><th scope="col"><button type="button" data-col="4">Message</button></th></tr></thead><tbody>
+<tr data-severity="error">
+<td><span class="badge sev-error">error</span></td><td><code>react-alt-text</code></td><td><a href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html">SC 1.1.1</a></td><td><code>src/App.tsx:4</code></td><td>img elements must have an alt prop</td></tr>
+</tbody></table>
+</section>
+</main>
+<script type="application/json" id="a11y-data">[{"ruleId":"react-alt-text","severity":"error","baseSeverity":"error","wcagRef":"1.1.1","wcagLevel":"A","wcagVersion":"2.0","message":"img elements must have an alt prop","file":"src/App.tsx","range":{"startLine":4,"startCol":7},"layer":1,"surface":"web-app","nonInterference":false,"fingerprint":"fp-1"}]</script>
+<script>
+(function () {
+  var sev = document.getElementById('filter-severity');
+  var q = document.getElementById('filter-text');
+  var status = document.getElementById('filter-status');
+  function apply() {
+    var rows = document.querySelectorAll('tbody tr[data-severity]');
+    var shown = 0;
+    rows.forEach(function (r) {
+      var okSev = sev.value === 'all' || r.getAttribute('data-severity') === sev.value;
+      var okText = !q.value || r.textContent.toLowerCase().indexOf(q.value.toLowerCase()) !== -1;
+      var show = okSev && okText;
+      r.hidden = !show;
+      if (show) shown++;
+    });
+    status.textContent = shown + ' of ' + rows.length + ' findings shown';
+  }
+  if (sev && q) { sev.addEventListener('change', apply); q.addEventListener('input', apply); apply(); }
+  document.querySelectorAll('th button[data-col]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var th = btn.closest('th');
+      var table = btn.closest('table');
+      var tbody = table.querySelector('tbody');
+      var idx = Number(btn.getAttribute('data-col'));
+      var asc = th.getAttribute('aria-sort') !== 'ascending';
+      Array.from(tbody.querySelectorAll('tr'))
+        .sort(function (a, b) {
+          var x = a.cells[idx].textContent.trim();
+          var y = b.cells[idx].textContent.trim();
+          return asc ? x.localeCompare(y, undefined, { numeric: true }) : y.localeCompare(x, undefined, { numeric: true });
+        })
+        .forEach(function (r) { tbody.appendChild(r); });
+      table.querySelectorAll('th').forEach(function (h) { h.removeAttribute('aria-sort'); });
+      th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+    });
+  });
+})();
+</script>
+</body>
+</html>"
+`;

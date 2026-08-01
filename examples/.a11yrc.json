@@ -1,0 +1,13 @@
+{
+  "$schema": "../packages/core/schemas/a11yrc.schema.json",
+  "rulePacks": ["react", "fluent-ui"],
+  "profile": "standard",
+  "wcagVersion": "2.2",
+  "overrides": {
+    "react-img-alt": "error"
+  },
+  "runtime": {
+    "urls": ["http://localhost:5173"],
+    "viewports": ["mobile", "tablet", "desktop"]
+  }
+}

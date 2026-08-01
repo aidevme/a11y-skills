@@ -1,0 +1,9 @@
+{
+  "name": "fluent-clean-fixture",
+  "private": true,
+  "description": "Clean fixture for the rules-fluent-ui pack — must produce zero findings",
+  "dependencies": {
+    "@fluentui/react-components": "^9.0.0",
+    "react": "^18.0.0"
+  }
+}

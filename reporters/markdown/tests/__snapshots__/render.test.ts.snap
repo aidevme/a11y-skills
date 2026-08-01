@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`markdown reporter > TC-P1.5-01: golden snapshot for mixed severities 1`] = `
+"# Accessibility Audit Report
+
+**Profile:** standard · **WCAG:** 2.2 · **Fail on:** error
+
+**Verdict:** ❌ Fail — 2 error(s), 2 warning(s), 1 info.
+
+> ⚠ 1 finding(s) violate WCAG non-interference criteria (5.2.5) — these can make an entire page unusable and are never profile-relaxed or baseline-eligible.
+
+## Errors (2)
+
+### SC 1.1.1 Non-text Content ([Understanding](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html))
+
+- \`src/App.tsx:4\` — img elements must have an alt prop (\`react-alt-text\`)
+
+### SC 2.2.2 Pause, Stop, Hide ([Understanding](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html))
+
+- \`src/App.tsx:10\` — Do not use &lt;marquee> elements (\`react-no-distracting-elements\`)
+
+## Warnings (2)
+
+### SC 2.4.3 Focus Order ([Understanding](https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html))
+
+- \`src/App.tsx:7\` — Avoid positive integer values for tabIndex (\`react-tabindex-no-positive\`)
+
+### SC 4.1.2 Name, Role, Value ([Understanding](https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html))
+
+- \`src/Widget.tsx:3\` — Fluent &lt;Spinner> has no label (\`fluent-spinner-label\`)
+
+## Info (1)
+
+### SC 1.3.1 Info and Relationships ([Understanding](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html))
+
+- \`src/App.tsx\` — informational note (\`demo-info\`)
+"
+`;

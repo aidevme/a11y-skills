@@ -1,0 +1,15 @@
+{
+  "name": "@aidevme/a11y-reporter-markdown",
+  "version": "0.0.1",
+  "description": "Markdown reporter for the a11y-skills audit toolkit — pure Finding[] to string transform",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  }
+}

@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  build-test-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium (Layer 2 tests)
+        run: npx playwright install --with-deps chromium
+
+      - name: Build workspaces
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Validate skills (Agent Skills spec)
+        run: npm run validate:skills
+
+      - name: Validate marketplace manifests
+        run: npm run validate:manifests
+
+      - name: Rule reference is up to date (generated docs never drift)
+        run: |
+          npm run docs:rules
+          git diff --exit-code docs/rule-reference.md
+
+      # Auditing the repo root would flag examples/ — those fixtures are
+      # deliberately seeded with violations and must stay that way, so the
+      # dogfood gate covers our own source trees instead.
+      - name: Dogfood — audit our own sources with our own CLI (md, sarif, html)
+        run: |
+          node packages/core/dist/cli.js audit packages --format md
+          node packages/core/dist/cli.js audit reporters --format md
+          node packages/core/dist/cli.js audit packages --format sarif --fail-on never --output /tmp/a11y-self.sarif
+          node packages/core/dist/cli.js audit packages --format html --fail-on never --output /tmp/a11y-self.html
+
+      - name: Upload dogfood SARIF to code scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: /tmp/a11y-self.sarif
+        continue-on-error: true

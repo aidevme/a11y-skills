@@ -1,0 +1,27 @@
+{
+  "name": "a11y-skills",
+  "owner": {
+    "name": "AIDevMe",
+    "url": "https://aidevme.com"
+  },
+  "interface": {
+    "displayName": "A11Y Skills"
+  },
+  "plugins": [
+    {
+      "name": "a11y",
+      "description": "A11Y plugin for coding agents — covering reusable skills, patterns, and best practices for building accessible plugins and tools within the Power Platform Toolbox ecosystem.",
+      "version": "0.0.1",
+      "homepage": "https://github.com/aidevme/A11Y-skills",
+      "source": {
+        "source": "local",
+        "path": "./.github/plugins/a11y"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

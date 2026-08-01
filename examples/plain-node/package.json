@@ -1,0 +1,8 @@
+{
+  "name": "plain-node-fixture",
+  "private": true,
+  "description": "Detector fixture: no UI framework at all",
+  "dependencies": {
+    "express": "^4.0.0"
+  }
+}

@@ -1,0 +1,76 @@
+# Azure DevOps pipeline template for a11y-skills.
+#
+# Copy into your project's pipeline (or `extends:` this template if hosted
+# centrally) and set the parameters below. Mirrors the GitHub Action in
+# action/action.yml: same CLI, same flags, same exit-code semantics.
+
+parameters:
+  - name: path
+    type: string
+    default: '.'
+  - name: failOn
+    type: string
+    default: error
+    values:
+      - error
+      - warning
+      - never
+  - name: reportFormat
+    type: string
+    default: html
+    values:
+      - md
+      - json
+      - sarif
+      - html
+  - name: runtime
+    type: boolean
+    default: false
+  - name: runtimeUrl
+    type: string
+    default: ''
+  - name: nodeVersion
+    type: string
+    default: '22.x'
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: ${{ parameters.nodeVersion }}
+    displayName: Use Node.js ${{ parameters.nodeVersion }}
+
+  - script: |
+      set -e
+      REPORT="a11y-report.${{ parameters.reportFormat }}"
+      ARGS=(audit "${{ parameters.path }}" --format "${{ parameters.reportFormat }}" --fail-on "${{ parameters.failOn }}" --output "$REPORT")
+      ${{ if eq(parameters.runtime, true) }}:
+        ARGS+=(--runtime --url "${{ parameters.runtimeUrl }}")
+      set +e
+      npx --yes @aidevme/a11y "${ARGS[@]}"
+      CODE=$?
+      echo "##vso[task.setvariable variable=A11Y_EXIT_CODE]$CODE"
+      echo "##vso[task.setvariable variable=A11Y_REPORT_PATH]$REPORT"
+      if [ "$CODE" -gt 1 ]; then
+        echo "##vso[task.logissue type=error]a11y audit exited with code $CODE (execution error)"
+        exit "$CODE"
+      fi
+      exit 0
+    displayName: Run accessibility audit
+
+  - publish: $(A11Y_REPORT_PATH)
+    artifact: a11y-report
+    displayName: Publish accessibility report artifact
+    condition: always()
+
+  - script: |
+      if [ "$A11Y_EXIT_CODE" = "1" ]; then
+        echo "##vso[task.logissue type=error]Accessibility audit found issues at or above --fail-on ${{ parameters.failOn }}. See the a11y-report artifact."
+        exit 1
+      fi
+    displayName: Fail the stage on findings at or above the threshold
+    condition: always()

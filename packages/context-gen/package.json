@@ -1,0 +1,15 @@
+{
+  "name": "@aidevme/a11y-context-gen",
+  "version": "0.0.1",
+  "description": "Layer 0 generator for a11y-skills: A11Y.md, .a11yrc.json, and host pointer snippets",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  }
+}

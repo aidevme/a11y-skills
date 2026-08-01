@@ -1,0 +1,30 @@
+{
+  "name": "@aidevme/a11y",
+  "version": "0.0.1",
+  "description": "Accessibility audit CLI and core engine of a11y-skills: finding schema, aggregator, rule-pack orchestration",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "a11y": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "@aidevme/a11y-context-gen": "0.0.1",
+    "@aidevme/a11y-framework-detector": "0.0.1",
+    "@aidevme/a11y-reporter-html": "0.0.1",
+    "@aidevme/a11y-reporter-markdown": "0.0.1",
+    "@aidevme/a11y-reporter-sarif": "0.0.1",
+    "@aidevme/a11y-rules-fluent-ui": "0.0.1",
+    "@aidevme/a11y-rules-react": "0.0.1",
+    "@aidevme/a11y-runtime-axe": "0.0.1",
+    "ajv": "^8.17.0"
+  }
+}

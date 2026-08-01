@@ -1,0 +1,19 @@
+{
+  "name": "@aidevme/a11y-runtime-axe",
+  "version": "0.0.1",
+  "description": "Layer 2 runtime scanner: axe-core via Playwright with viewport matrix, reflow, text-spacing, and orientation checks",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "axe-core": "^4.10.0",
+    "playwright": "^1.48.0"
+  }
+}

@@ -1,0 +1,105 @@
+name: a11y-skills audit
+description: Runs the @aidevme/a11y accessibility audit and uploads SARIF to GitHub code scanning.
+author: AIDevMe
+branding:
+  icon: eye
+  color: purple
+
+inputs:
+  path:
+    description: Path to audit, relative to the repo root.
+    required: false
+    default: '.'
+  scope:
+    description: Comma-separated rule packs to run (informational; packs auto-detect by framework).
+    required: false
+    default: ''
+  fail-on:
+    description: Findings level that fails the job (error | warning | never).
+    required: false
+    default: 'error'
+  report-format:
+    description: Report format for the job's own output artifact (md | json | sarif | html).
+    required: false
+    default: 'sarif'
+  runtime:
+    description: Also run the Layer 2 axe-core runtime scan. Requires a running preview at `url`.
+    required: false
+    default: 'false'
+  url:
+    description: Runtime target URL (only used when runtime is true).
+    required: false
+    default: ''
+  baseline:
+    description: Honor .a11y-baseline.json if present in the audited path (default CLI behavior; set to "false" to ignore by running in a path without the file).
+    required: false
+    default: 'true'
+  upload-sarif:
+    description: Upload the SARIF report to GitHub code scanning.
+    required: false
+    default: 'true'
+  node-version:
+    description: Node.js version to run the CLI with.
+    required: false
+    default: '22'
+
+outputs:
+  report-path:
+    description: Path to the generated report file.
+    value: ${{ steps.audit.outputs.report-path }}
+  conclusion:
+    description: '"success" or "failure" based on --fail-on threshold.'
+    value: ${{ steps.audit.outputs.conclusion }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Run accessibility audit
+      id: audit
+      shell: bash
+      run: |
+        set +e
+        REPORT="a11y-report.${{ inputs.report-format }}"
+        ARGS=(audit "${{ inputs.path }}" --format "${{ inputs.report-format }}" --fail-on "${{ inputs.fail-on }}" --output "$REPORT")
+        if [ "${{ inputs.runtime }}" = "true" ]; then
+          ARGS+=(--runtime --url "${{ inputs.url }}")
+        fi
+        npx --yes @aidevme/a11y "${ARGS[@]}"
+        CODE=$?
+        echo "report-path=$REPORT" >> "$GITHUB_OUTPUT"
+        if [ "$CODE" -eq 0 ]; then
+          echo "conclusion=success" >> "$GITHUB_OUTPUT"
+        elif [ "$CODE" -eq 1 ]; then
+          echo "conclusion=failure" >> "$GITHUB_OUTPUT"
+        else
+          echo "::error::a11y audit exited with code $CODE (execution error, not a findings failure)"
+          exit "$CODE"
+        fi
+
+    - name: Also generate SARIF for code scanning (when report-format is not sarif)
+      if: ${{ inputs.upload-sarif == 'true' && inputs.report-format != 'sarif' }}
+      shell: bash
+      run: npx --yes @aidevme/a11y audit "${{ inputs.path }}" --format sarif --fail-on never --output a11y.sarif
+
+    - name: Upload SARIF to code scanning
+      if: ${{ inputs.upload-sarif == 'true' }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.report-format == 'sarif' && steps.audit.outputs.report-path || 'a11y.sarif' }}
+
+    - name: Upload report artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: a11y-report
+        path: ${{ steps.audit.outputs.report-path }}
+
+    - name: Fail the job on findings at or above the threshold
+      if: ${{ steps.audit.outputs.conclusion == 'failure' }}
+      shell: bash
+      run: |
+        echo "::error::Accessibility audit found issues at or above --fail-on ${{ inputs.fail-on }}. See the a11y-report artifact."
+        exit 1

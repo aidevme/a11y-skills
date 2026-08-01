@@ -1,0 +1,8 @@
+{
+  "name": "react-seeded-fixture",
+  "private": true,
+  "description": "Seeded-violation fixture for the rules-react pack — every violation is deliberate",
+  "dependencies": {
+    "react": "^18.0.0"
+  }
+}

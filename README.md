@@ -1,5 +1,7 @@
 # a11y-skills
 
+![a11y-skills social preview](assets/social-preview.png)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Accessibility auditing as a multi-agent plugin + skillset: WCAG 2.2 static + runtime analysis for React and Fluent UI v9 today; Vue/Angular/Svelte/static HTML and Power Platform surfaces (PCF, Code Apps, Power Pages) on the [roadmap](docs/IMPLEMENTATION.md).
@@ -20,7 +22,7 @@ The canonical plugin source is `.github/plugins/a11y/` — skills: `a11y-overvie
 Copilot CLI natively reads `.github/plugin/marketplace.json`, so no extra config is needed on our side. Marketplace refs use `#ref`:
 
 ```bash
-copilot plugin marketplace add aidevme/a11y-skills#dev
+copilot plugin marketplace add aidevme/a11y-skills
 copilot plugin install a11y@a11y-skills
 ```
 

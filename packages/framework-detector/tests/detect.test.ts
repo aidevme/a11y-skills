@@ -38,4 +38,32 @@ describe('detectFrameworks', () => {
       fluent: false,
     });
   });
+
+  it('TC-P3: vue dep with no .vue files → vue', () => {
+    expect(detectFrameworks(fixture('vue-devdep'))).toEqual({
+      frameworks: ['vue'],
+      fluent: false,
+    });
+  });
+
+  it('TC-P3: .vue SFC files → vue (file marker suffices)', () => {
+    expect(detectFrameworks(fixture('vue-seeded'))).toEqual({
+      frameworks: ['vue'],
+      fluent: false,
+    });
+  });
+
+  it('TC-P3.1: plain .html file, no framework dep → static-html fallback', () => {
+    expect(detectFrameworks(fixture('static-html-devdep'))).toEqual({
+      frameworks: ['static-html'],
+      fluent: false,
+    });
+  });
+
+  it('TC-P3: react + vue both present → all-match reports both, static-html never added on top', () => {
+    expect(detectFrameworks(fixture('react-vue-multi'))).toEqual({
+      frameworks: ['react', 'vue'],
+      fluent: false,
+    });
+  });
 });

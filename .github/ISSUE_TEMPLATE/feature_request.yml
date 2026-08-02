@@ -1,0 +1,57 @@
+name: ✨ Feature request
+description: Suggest a new capability for the CLI, engine, reporters, or a host integration
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a new **rule**, please use the **New rule request** template instead — it captures the details we need more directly.
+        Check [docs/IMPLEMENTATION.md](https://github.com/aidevme/a11y-skills/blob/main/docs/IMPLEMENTATION.md) first — it's the phased roadmap and your idea may already be planned.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - New framework/surface support (Angular, Svelte, PCF, Code Apps, Power Pages, ...)
+        - CLI command or flag
+        - Reporter / output format
+        - Layer 0 (A11Y.md generation, init, pre-commit hook)
+        - CI/CD (GitHub Action, Azure DevOps pipeline)
+        - Agent skill / plugin behavior
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What are you trying to do that the toolkit doesn't currently support?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked docs/IMPLEMENTATION.md and this isn't already on the roadmap for an upcoming phase
+          required: true

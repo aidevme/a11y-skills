@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Security vulnerability
+    url: https://github.com/aidevme/a11y-skills/security/advisories/new
+    about: Do not report security vulnerabilities through public issues — see SECURITY.md and use private advisory reporting instead.
+  - name: 💬 Questions & discussion
+    url: https://github.com/aidevme/a11y-skills/discussions
+    about: Ask usage questions or start a discussion — not for bugs or feature requests.
+  - name: 📖 Documentation & roadmap
+    url: https://github.com/aidevme/a11y-skills/tree/main/docs
+    about: DESIGN.md, IMPLEMENTATION.md (phased roadmap), TEST_PLAN.md, and the generated rule reference.

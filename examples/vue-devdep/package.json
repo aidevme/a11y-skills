@@ -1,0 +1,8 @@
+{
+  "name": "vue-devdep-fixture",
+  "private": true,
+  "description": "Detector fixture: vue present only as a dependency, no .vue files",
+  "dependencies": {
+    "vue": "^3.4.0"
+  }
+}

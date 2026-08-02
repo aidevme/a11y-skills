@@ -1,0 +1,81 @@
+name: ➕ New rule request
+description: Request a new accessibility check be added to an existing (or new) rule pack
+title: "[New rule]: "
+labels: ["enhancement", "new-rule", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting, check [docs/rule-reference.md](https://github.com/aidevme/a11y-skills/blob/main/docs/rule-reference.md) to confirm the rule doesn't already exist under a different name.
+
+  - type: dropdown
+    id: pack
+    attributes:
+      label: Which rule pack should this belong to?
+      options:
+        - rules-react
+        - rules-fluent-ui
+        - rules-vue
+        - rules-static-html
+        - A new pack — specify the framework/surface below
+    validations:
+      required: true
+
+  - type: input
+    id: newPack
+    attributes:
+      label: If a new pack, which framework or surface?
+      placeholder: "e.g. Angular, Svelte, PCF, Power Pages — see the roadmap in docs/IMPLEMENTATION.md"
+    validations:
+      required: false
+
+  - type: input
+    id: wcag
+    attributes:
+      label: WCAG success criterion
+      placeholder: "e.g. 2.4.11 Focus Not Obscured (Minimum)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: level
+    attributes:
+      label: WCAG level
+      options:
+        - A
+        - AA
+        - AAA
+    validations:
+      required: true
+
+  - type: textarea
+    id: violation
+    attributes:
+      label: Example that should trigger the new rule
+      description: Minimal code demonstrating the violation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pass
+    attributes:
+      label: Example that should pass
+      description: The same pattern, fixed — useful for the clean-fixture false-positive gate.
+    validations:
+      required: false
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why does this matter for real users?
+      description: What breaks for assistive-technology users if this isn't caught?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked docs/rule-reference.md and this rule doesn't already exist
+          required: true

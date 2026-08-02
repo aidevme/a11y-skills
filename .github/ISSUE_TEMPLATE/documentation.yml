@@ -1,0 +1,36 @@
+name: 📖 Documentation issue
+description: Something in the docs is missing, unclear, or incorrect
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: dropdown
+    id: doc
+    attributes:
+      label: Which document?
+      options:
+        - README.md
+        - docs/DESIGN.md
+        - docs/IMPLEMENTATION.md
+        - docs/TEST_PLAN.md
+        - docs/rule-reference.md
+        - docs/safety-and-guardrails.md
+        - Agent skill content (.github/plugins/a11y/skills/*)
+        - action/README.md
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What's wrong or missing?
+      description: Quote the confusing/incorrect text if possible, and link to the section.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix (optional)
+    validations:
+      required: false

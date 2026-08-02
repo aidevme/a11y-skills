@@ -1,0 +1,63 @@
+name: 🔌 Plugin / skill installation issue
+description: Trouble installing or using the a11y plugin in Claude Code, Copilot CLI, Codex, or Cursor
+title: "[Install]: "
+labels: ["installation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [Install section of the README](https://github.com/aidevme/a11y-skills#install) first — commands and marketplace ref syntax differ per host.
+
+  - type: dropdown
+    id: host
+    attributes:
+      label: Agent host
+      options:
+        - Claude Code
+        - GitHub Copilot CLI
+        - Codex
+        - Cursor
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: Exact commands you ran
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output or error received
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: ref
+    attributes:
+      label: Which branch/ref did you install from?
+      placeholder: "e.g. dev, main, or a specific commit SHA"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I followed the README's install steps for my host
+          required: true
+        - label: The marketplace add step succeeded (`plugin marketplace list` shows a11y-skills) before I tried installing the plugin
+          required: false

@@ -13,7 +13,7 @@
     "reporters/*"
   ],
   "scripts": {
-    "build": "tsc -b packages/core packages/framework-detector packages/rules-react packages/rules-fluent-ui packages/context-gen packages/runtime-axe reporters/markdown reporters/sarif reporters/html",
+    "build": "tsc -b packages/framework-detector packages/rules-react packages/rules-fluent-ui packages/rules-vue packages/rules-static-html packages/hooks-precommit packages/runtime-axe reporters/markdown packages/core reporters/sarif reporters/html packages/context-gen",
     "pretest": "npm run build",
     "test": "vitest run",
     "lint": "eslint .",

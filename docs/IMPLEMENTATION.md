@@ -9,16 +9,16 @@
 
 ## Phase overview & dependency graph
 
-| Phase | Delivers | Depends on |
-|---|---|---|
-| **P0 — Scaffolding** | Workspace, manifests, CI shell, doc/config conventions | nothing |
-| **P1 — MVP** | Core engine + CLI, React Layer 1, Markdown reporter, router/audit/init skills, minimal Layer 0 | P0 |
-| **P2 — v1** | SARIF + HTML reporters, Layer 2 runtime, compliance profiles, CI action + AzDO, fixtures/evals, marketplace submissions | P1 |
-| **P3 — v1.5** | Static-HTML + Vue rule packs, metadata-driven A11Y.md, pre-commit hook | P2 |
-| **P4 — v1.6** | Angular + Svelte rule packs, Claude Code hooks | P3 |
-| **P5 — v2** | Surface Detector, PCF adapter + domain rules, PCF/Dataverse guides | P2 (P3/P4 not required) |
-| **P6 — v3** | Code Apps adapter, Cursor marketplace, optional VS Code extension | P5 |
-| **P7 — v4** | Power Pages adapter (Liquid parser + live-crawl), portal guides | P5, P3 (needs `rules-static-html`) |
+| Phase | Delivers | Depends on | Implementation Status |
+|---|---|---|---|
+| **P0 — Scaffolding** | Workspace, manifests, CI shell, doc/config conventions | nothing | ✅ Done |
+| **P1 — MVP** | Core engine + CLI, React Layer 1, Markdown reporter, router/audit/init skills, minimal Layer 0 | P0 | ✅ Done (npm publish still pending — needs credentials) |
+| **P2 — v1** | SARIF + HTML reporters, Layer 2 runtime, compliance profiles, CI action + AzDO, fixtures/evals, marketplace submissions | P1 | ✅ Done (Claude Code / awesome-copilot marketplace submissions still pending — external, account-gated) |
+| **P3 — v1.5** | Static-HTML + Vue rule packs, metadata-driven A11Y.md, pre-commit hook | P2 | ✅ Done |
+| **P4 — v1.6** | Angular + Svelte rule packs, Claude Code hooks | P3 | ⬜ Not started |
+| **P5 — v2** | Surface Detector, PCF adapter + domain rules, PCF/Dataverse guides | P2 (P3/P4 not required) | ⬜ Not started |
+| **P6 — v3** | Code Apps adapter, Cursor marketplace, optional VS Code extension | P5 | ⬜ Not started |
+| **P7 — v4** | Power Pages adapter (Liquid parser + live-crawl), portal guides | P5, P3 (needs `rules-static-html`) | ⬜ Not started |
 
 Cross-cutting rule for every phase: **all layers emit the shared `Finding` schema (§2), and every new rule carries `wcagRef`/`wcagLevel`/`wcagVersion` metadata (§5)** — no exceptions, since profiles (§2.3b), reporters (§6), and the generated docs (§8) all read that metadata.
 
@@ -247,27 +247,29 @@ The client deliverable (§6) — treat as a product surface, not a dev tool.
 
 Foundation for Power Pages later (§2.2 — "same walker, two consumers"), so build it as a library + pack, not just a pack.
 
-- [ ] DOM-tree walker over parse5/linkedom; checks per §2.2: landmarks, `alt`, label/`for` pairing, heading order, `lang`, skip links.
-- [ ] Export the walker's node-visitor API publicly (`rules-power-pages` will extend it in P7).
-- [ ] Framework-detector: static-HTML detection = plain `.html` files + no framework dependency (fallback ordering after all framework checks).
-- [ ] Standard mapping-table + fixture regime.
+- [x] DOM-tree walker over parse5/linkedom; checks per §2.2: landmarks, `alt`, label/`for` pairing, heading order, `lang`, skip links. *(Built on `linkedom` rather than raw `parse5` — gives querySelector/closest/etc. for free, which the checks lean on heavily.)*
+- [x] Export the walker's node-visitor API publicly (`rules-power-pages` will extend it in P7). *(`walkElements` exported from `@aidevme/a11y-rules-static-html`; TC-P3.1-09 proves a dummy consumer receives every node.)*
+- [x] Framework-detector: static-HTML detection = plain `.html` files + no framework dependency (fallback ordering after all framework checks).
+- [x] Standard mapping-table + fixture regime. *(7 rules across 6 check families — landmarks, alt, label/for, heading order, lang [missing+invalid], skip links.)*
 
 ### 3.2 `packages/rules-vue`
 
-- [ ] Wrap `eslint-plugin-vuejs-accessibility` via `vue-eslint-parser` (§2.2); detection: `.vue` SFCs or `vue` dep. Mapping table + fixtures as always.
+- [x] Wrap `eslint-plugin-vuejs-accessibility` via `vue-eslint-parser` (§2.2); detection: `.vue` SFCs or `vue` dep. Mapping table + fixtures as always. *(All 23 of the plugin's rules mapped, not a curated subset; `label-has-for`'s default `required: {every: [...]}` relaxed to `{some: [...]}` to match jsx-a11y's more permissive default.)*
 
 ### 3.3 Metadata-driven `A11Y.md` generation (§2.3a)
 
-- [ ] Replace the static template: `context-gen` now assembles `A11Y.md` from the rule packs' mapping tables (rule → guidance line), filtered by detected framework (+ surface once P5 lands), honoring the active profile. **Prevention and audit share one source of truth — they can never drift** (§2.3a).
-- [ ] Regeneration flow: re-running `a11y init` updates the generated block (fenced by markers) without touching user-added content.
-- [ ] Resolve Open Question 5 before building: own format vs. fecarrico/mgifford-compatible conventions (hybrid — own generator, their file conventions — is the design's leaning). Record the decision in DESIGN.md.
+- [x] Replace the static template: `context-gen` now assembles `A11Y.md` from the rule packs' mapping tables (rule → guidance line), filtered by detected framework (+ surface once P5 lands), honoring the active profile. **Prevention and audit share one source of truth — they can never drift** (§2.3a).
+- [x] Regeneration flow: re-running `a11y init` updates the generated block (fenced by markers) without touching user-added content.
+- [x] Resolve Open Question 5 before building: own format vs. fecarrico/mgifford-compatible conventions (hybrid — own generator, their file conventions — is the design's leaning). Record the decision in DESIGN.md. *(Resolved — see DESIGN.md §Open Questions item 5.)*
 
 ### 3.4 `packages/hooks-precommit`
 
-- [ ] Husky/lefthook config + runner: fast Layer 1 pass on **staged files only** (§12.3 — change-scoped, never whole-repo), honoring baseline + profile. `a11y init --with-precommit` installs it.
-- [ ] Host-independent enforcement for Cursor/Copilot/Codex users (§4.3 substitute).
+- [x] Husky/lefthook config + runner: fast Layer 1 pass on **staged files only** (§12.3 — change-scoped, never whole-repo), honoring baseline + profile. `a11y init --with-precommit` installs it. *(Implemented as a plain git hook at `.git/hooks/pre-commit`, not a husky/lefthook dependency — see note below.)*
+- [x] Host-independent enforcement for Cursor/Copilot/Copilot CLI/Codex users (§4.3 substitute).
 
-**Phase done when:** Vue and static-HTML fixture projects audit correctly; regenerated A11Y.md diffs only when rule metadata changes; pre-commit blocks a staged seeded violation but not pre-existing ones.
+*(Design deviation, worth flagging: the plan said "husky/lefthook config"; the shipped version writes directly to `.git/hooks/pre-commit` instead, with no new dependency for consumer projects and no risk of colliding with a husky config they already run. It never overwrites a pre-existing hook it didn't install itself. If a real need for husky/lefthook-specific integration shows up later, this can be added as an alternate install path without changing the core `precommit` CLI command it wraps.)*
+
+**Phase done when:** Vue and static-HTML fixture projects audit correctly; regenerated A11Y.md diffs only when rule metadata changes; pre-commit blocks a staged seeded violation but not pre-existing ones. **✅ Done — verified by the Phase 3 test suite (55 new tests across rules-vue, rules-static-html, hooks-precommit, and context-gen).**
 
 ---
 

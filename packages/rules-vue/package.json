@@ -1,0 +1,21 @@
+{
+  "name": "@aidevme/a11y-rules-vue",
+  "version": "0.0.1",
+  "description": "Vue (eslint-plugin-vuejs-accessibility) Layer 1 rule pack for the a11y-skills audit toolkit",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "rules-map.json"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "eslint": "^9.0.0 || ^10.0.0",
+    "eslint-plugin-vuejs-accessibility": "^2.5.0",
+    "vue-eslint-parser": "^10.4.1"
+  }
+}

@@ -33,12 +33,19 @@ interface AuditOptions {
   prune: boolean;
 }
 
+interface InitOptions {
+  path: string;
+  withPrecommit: boolean;
+}
+
 const HELP = `Usage: a11y <command> [options]
 
 Commands:
-  audit    [path]   Run the accessibility audit (default path: .)
-  baseline [path]   Snapshot current findings to .a11y-baseline.json (--prune: only remove fixed entries)
-  init     [path]   Generate A11Y.md, .a11yrc.json, and host pointer snippets
+  audit      [path]   Run the accessibility audit (default path: .)
+  baseline   [path]   Snapshot current findings to .a11y-baseline.json (--prune: only remove fixed entries)
+  init       [path]   Generate A11Y.md, .a11yrc.json, and host pointer snippets
+                       --with-precommit  also install a git pre-commit hook (staged files only)
+  precommit  [path]   Internal: run the fast staged-files-only gate (installed by init --with-precommit)
 
 Audit options:
   --format md|json|sarif|html   Output format (default: md)
@@ -105,6 +112,16 @@ function parseArgs(args: string[]): AuditOptions {
   return opts;
 }
 
+function parseInitArgs(args: string[]): InitOptions {
+  const opts: InitOptions = { path: '.', withPrecommit: false };
+  for (const arg of args) {
+    if (arg === '--with-precommit') opts.withPrecommit = true;
+    else if (arg.startsWith('--')) throw new CliError(`unknown option: ${arg}`);
+    else opts.path = arg;
+  }
+  return opts;
+}
+
 function resolveRoot(path: string): string {
   const root = resolve(path);
   if (!existsSync(root) || !statSync(root).isDirectory())
@@ -112,20 +129,29 @@ function resolveRoot(path: string): string {
   return root;
 }
 
-/** Shared pipeline: detect → static packs → optional runtime → enrich → profile → aggregate. */
+/**
+ * Shared pipeline: detect → static packs → optional runtime → enrich →
+ * profile → aggregate. When `filesOverride` is given (the pre-commit gate),
+ * each pack only sees the subset of those files matching its own
+ * extensions, instead of scanning the whole project tree.
+ */
 async function collectFindings(
   root: string,
   config: A11yConfig,
   opts: Pick<AuditOptions, 'runtime' | 'urls' | 'crawl'>,
+  filesOverride?: string[],
 ): Promise<{ findings: Finding[]; frameworks: string[] }> {
   const { detectFrameworks } = await import('@aidevme/a11y-framework-detector');
   const detection = detectFrameworks(root);
-  const files = listUiFiles(root);
 
   const raw: RawFinding[] = [];
   for (const pack of BUILTIN_PACKS) {
     if (!pack.frameworks.some((f) => detection.frameworks.includes(f))) continue;
     if (pack.requiresFluent && !detection.fluent) continue;
+    const files = filesOverride
+      ? filesOverride.filter((f) => pack.extensions.some((ext) => f.endsWith(ext)))
+      : listUiFiles(root, pack.extensions);
+    if (files.length === 0) continue;
     const mod = (await import(pack.module)) as {
       runRules: (files: string[], projectRoot: string) => Promise<unknown[]>;
     };
@@ -235,14 +261,47 @@ async function baseline(opts: AuditOptions): Promise<number> {
 }
 
 async function init(args: string[]): Promise<number> {
-  const root = resolveRoot(args[0] ?? '.');
+  const opts = parseInitArgs(args);
+  const root = resolveRoot(opts.path);
+  const config = loadConfig(root);
   const { detectFrameworks } = await import('@aidevme/a11y-framework-detector');
   const { runInit } = await import('@aidevme/a11y-context-gen');
-  const result = await runInit(root, detectFrameworks(root));
+  const result = await runInit(root, detectFrameworks(root), {
+    profile: config.profile,
+    withPrecommit: opts.withPrecommit,
+  });
   for (const f of result.created) console.log(`created   ${f}`);
   for (const f of result.updated) console.log(`updated   ${f}`);
   for (const f of result.unchanged) console.log(`unchanged ${f}`);
   return 0;
+}
+
+/**
+ * Change-scoped gate (DESIGN §12.3): audits only staged files, never the
+ * whole repo. Installed as a git pre-commit hook by `a11y init
+ * --with-precommit`; honors baseline + profile like any other audit.
+ */
+async function precommit(args: string[]): Promise<number> {
+  const root = resolveRoot(args[0] ?? '.');
+  const config = loadConfig(root);
+  const { getStagedFiles } = await import('@aidevme/a11y-hooks-precommit');
+  const staged = getStagedFiles(root);
+  if (staged.length === 0) {
+    console.log('a11y precommit: no staged UI files, skipping');
+    return 0;
+  }
+  const { findings } = await collectFindings(root, config, { runtime: false, urls: [], crawl: false }, staged);
+  const active = findings.filter((f) => !f.baselined && f.severity === 'error');
+  if (active.length === 0) {
+    console.log(`a11y precommit: ${staged.length} staged file(s) clean`);
+    return 0;
+  }
+  console.error(`a11y precommit: ${active.length} new error(s) in staged files:`);
+  for (const f of active) {
+    const loc = f.range ? `${f.file}:${f.range.startLine}` : f.file;
+    console.error(`  ${loc}  ${f.message} (${f.ruleId}, SC ${f.wcagRef})`);
+  }
+  return 1;
 }
 
 export async function main(argv: string[]): Promise<number> {
@@ -251,6 +310,7 @@ export async function main(argv: string[]): Promise<number> {
     if (cmd === 'audit') return await audit(parseArgs(rest));
     if (cmd === 'baseline') return await baseline(parseArgs(rest));
     if (cmd === 'init') return await init(rest);
+    if (cmd === 'precommit') return await precommit(rest);
     if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') {
       console.log(HELP);
       return 0;

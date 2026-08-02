@@ -1,0 +1,16 @@
+{
+  "name": "@aidevme/a11y-hooks-precommit",
+  "version": "0.0.1",
+  "description": "Host-independent git pre-commit gate for the a11y-skills audit toolkit: staged-files-only, change-scoped enforcement",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "hook-template.sh"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  }
+}

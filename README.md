@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Accessibility auditing as a multi-agent plugin + skillset: WCAG 2.2 static + runtime analysis for React and Fluent UI v9 today; Vue/Angular/Svelte/static HTML and Power Platform surfaces (PCF, Code Apps, Power Pages) on the [roadmap](docs/IMPLEMENTATION.md).
+Accessibility auditing as a multi-agent plugin + skillset: WCAG 2.2 static + runtime analysis for React, Fluent UI v9, Vue, and static HTML today; Angular/Svelte and Power Platform surfaces (PCF, Code Apps, Power Pages) on the [roadmap](docs/IMPLEMENTATION.md).
 
 ## Prerequisites
 
@@ -121,6 +121,9 @@ npx @aidevme/a11y audit --runtime --url http://localhost:5173
 # set up prevention: A11Y.md + .a11yrc.json + agent host pointers
 npx @aidevme/a11y init
 
+# also install a host-independent git pre-commit gate (staged files only)
+npx @aidevme/a11y init --with-precommit
+
 # brownfield adoption: snapshot current findings as non-failing, gate only new ones
 npx @aidevme/a11y baseline
 npx @aidevme/a11y baseline --prune   # drop entries for findings that got fixed
@@ -132,10 +135,21 @@ Configuration lives in `.a11yrc.json` (see `packages/core/schemas/a11yrc.schema.
 
 ## What the audit checks
 
-- **Layer 1 (static)** — `rules-react`: 21 rules wrapping `eslint-plugin-jsx-a11y` with WCAG metadata. `rules-fluent-ui`: 6 custom rules for Fluent UI v9 semantics (import-resolved, alias-aware). Full generated list: [docs/rule-reference.md](docs/rule-reference.md).
+- **Layer 1 (static)** — four rule packs, auto-selected by detected framework:
+  - `rules-react`: 21 rules wrapping `eslint-plugin-jsx-a11y` with WCAG metadata.
+  - `rules-fluent-ui`: 6 custom rules for Fluent UI v9 semantics (import-resolved, alias-aware).
+  - `rules-vue`: 23 rules wrapping `eslint-plugin-vuejs-accessibility` via `vue-eslint-parser`.
+  - `rules-static-html`: 7 rules from a custom DOM-tree walker (landmarks, alt text, label pairing, heading order, lang, skip links) — no build step, no framework required; its walker is a public, reusable primitive for future markup-based packs.
+  - Full generated list: [docs/rule-reference.md](docs/rule-reference.md).
 - **Layer 2 (runtime, `--runtime`)** — axe-core via Playwright across a mobile/tablet/desktop viewport matrix, plus dedicated checks for reflow at 320px (SC 1.4.10), WCAG text-spacing overrides (SC 1.4.12), and single-orientation lockout (SC 1.3.4).
 
-Findings carry WCAG references, drift-resilient fingerprints, and a non-interference flag for the four WCAG 5.2.5 criteria (never relaxed, never baseline-eligible).
+A project can match more than one framework at once (e.g. React + Vue in a monorepo) — every matching pack runs. Findings carry WCAG references, drift-resilient fingerprints, and a non-interference flag for the four WCAG 5.2.5 criteria (never relaxed, never baseline-eligible).
+
+## Prevention (Layer 0)
+
+`npx @aidevme/a11y init` generates `A11Y.md` **from the same rule metadata the audit enforces** — every bullet in it is sourced straight from a rule pack's mapping table, filtered to the frameworks actually detected, so prevention guidance and audit rules can never drift apart. Re-running `init` refreshes only the generated block (marked by HTML comments); anything you add outside it is preserved.
+
+`init --with-precommit` additionally installs a plain git pre-commit hook at `.git/hooks/pre-commit` — no husky/lefthook dependency, works identically across every host. It audits **only staged files** (never the whole repo), honors your baseline and profile, and never overwrites a pre-existing hook it didn't install itself.
 
 ## Reports
 

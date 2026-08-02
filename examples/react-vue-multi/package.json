@@ -1,0 +1,9 @@
+{
+  "name": "react-vue-multi-fixture",
+  "private": true,
+  "description": "Detector fixture: both React and Vue present — proves all-match detection",
+  "dependencies": {
+    "react": "^18.0.0",
+    "vue": "^3.4.0"
+  }
+}

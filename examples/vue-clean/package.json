@@ -1,0 +1,8 @@
+{
+  "name": "vue-clean-fixture",
+  "private": true,
+  "description": "Clean fixture for the rules-vue pack — must produce zero findings (false-positive gate)",
+  "dependencies": {
+    "vue": "^3.4.0"
+  }
+}

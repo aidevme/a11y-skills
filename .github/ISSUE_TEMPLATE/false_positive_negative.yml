@@ -1,0 +1,97 @@
+name: 🎯 Rule false positive / false negative
+description: A rule fired when it shouldn't have, or missed a real accessibility violation
+title: "[Rule accuracy]: "
+labels: ["rule-accuracy", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Rule accuracy reports are the most valuable kind of issue for this project — thank you.
+        Check [docs/rule-reference.md](https://github.com/aidevme/a11y-skills/blob/main/docs/rule-reference.md) first to confirm the rule's intended behavior before reporting.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type
+      options:
+        - False positive (the rule fired but the code is actually accessible)
+        - False negative (the rule missed a real accessibility violation)
+    validations:
+      required: true
+
+  - type: input
+    id: ruleId
+    attributes:
+      label: Rule ID
+      description: "e.g. react-alt-text, fluent-dialog-aria-modal, vue-label-has-for, html-skip-link. See docs/rule-reference.md for the full list."
+      placeholder: "react-alt-text"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pack
+    attributes:
+      label: Rule pack
+      options:
+        - rules-react
+        - rules-fluent-ui
+        - rules-vue
+        - rules-static-html
+        - runtime-axe (Layer 2)
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: snippet
+    attributes:
+      label: Minimal code snippet
+      description: The smallest possible example that reproduces the issue. Include the surrounding fenced code block with a language tag (tsx, vue, html) for syntax highlighting.
+      placeholder: |
+        ```tsx
+        <img src="logo.png" alt="" role="presentation" />
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: Should this finding fire, or not? What ruleId/severity/WCAG SC, if it should fire?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Paste the finding (or note its absence) — ideally the JSON object from `--format json`.
+      render: json
+    validations:
+      required: true
+
+  - type: input
+    id: wcag
+    attributes:
+      label: Relevant WCAG success criterion (if known)
+      placeholder: "e.g. 1.1.1, 4.1.2"
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: "@aidevme/a11y version"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked docs/rule-reference.md for this rule's documented behavior
+          required: true
+        - label: I searched existing issues and this hasn't already been reported
+          required: true

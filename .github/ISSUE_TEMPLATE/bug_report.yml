@@ -1,0 +1,132 @@
+name: 🐛 Bug report
+description: Something in the CLI, audit engine, a rule pack, or a reporter isn't working as expected
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please search [existing issues](https://github.com/aidevme/a11y-skills/issues) first.
+        If this is about a rule firing incorrectly (or not firing when it should), please use the **Rule false positive / false negative** template instead — it captures the details we need much faster.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Include the exact CLI command you ran and, if relevant, a minimal fixture/code snippet.
+      placeholder: |
+        1. `npx @aidevme/a11y audit ./my-app --format json`
+        2. ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Which part of the toolkit?
+      multiple: true
+      options:
+        - CLI (audit/init/baseline/precommit)
+        - Core engine (aggregator/profiles/baseline)
+        - rules-react
+        - rules-fluent-ui
+        - rules-vue
+        - rules-static-html
+        - runtime-axe (Layer 2, --runtime)
+        - Reporter — Markdown
+        - Reporter — SARIF
+        - Reporter — HTML
+        - context-gen (A11Y.md / .a11yrc.json generation)
+        - hooks-precommit
+        - GitHub Action (action/)
+        - Azure DevOps pipeline (.azdo/)
+        - Agent skill / plugin (Claude Code, Copilot CLI, Codex, Cursor)
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: "@aidevme/a11y version"
+      description: From `package.json`, or run `npx @aidevme/a11y --help`.
+      placeholder: "e.g. 0.0.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: host
+    attributes:
+      label: Where are you running this?
+      options:
+        - CLI directly (npx/npm)
+        - Claude Code plugin
+        - GitHub Copilot CLI plugin
+        - Codex plugin
+        - Cursor
+        - GitHub Action
+        - Azure DevOps pipeline
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: "node --version"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: ".a11yrc.json (if relevant)"
+      render: json
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output, error message, or stack trace
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this hasn't already been reported
+          required: true
+        - label: I'm running Node.js 20 or later
+          required: false

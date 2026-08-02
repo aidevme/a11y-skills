@@ -1,0 +1,8 @@
+{
+  "name": "vue-seeded-fixture",
+  "private": true,
+  "description": "Seeded-violation fixture for the rules-vue pack — every violation is deliberate",
+  "dependencies": {
+    "vue": "^3.4.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@aidevme/a11y-rules-static-html",
+  "version": "0.0.1",
+  "description": "Static HTML Layer 1 rule pack for the a11y-skills audit toolkit: a DOM-tree walker checking landmarks, alt text, label pairing, heading order, lang, and skip links",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "rules-map.json"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "linkedom": "^0.18.13"
+  }
+}

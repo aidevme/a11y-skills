@@ -10,14 +10,34 @@ export interface RulePackDescriptor {
   frameworks: string[];
   /** Pack only runs when Fluent UI is detected. */
   requiresFluent?: boolean;
+  /** File extensions this pack's runRules() understands — scoped per pack so e.g. rules-vue never sees a .tsx file. */
+  extensions: string[];
 }
 
 export const BUILTIN_PACKS: RulePackDescriptor[] = [
-  { id: 'react', module: '@aidevme/a11y-rules-react', frameworks: ['react'] },
+  {
+    id: 'react',
+    module: '@aidevme/a11y-rules-react',
+    frameworks: ['react'],
+    extensions: ['.tsx', '.jsx'],
+  },
   {
     id: 'fluent-ui',
     module: '@aidevme/a11y-rules-fluent-ui',
     frameworks: ['react'],
     requiresFluent: true,
+    extensions: ['.tsx', '.jsx'],
+  },
+  {
+    id: 'vue',
+    module: '@aidevme/a11y-rules-vue',
+    frameworks: ['vue'],
+    extensions: ['.vue'],
+  },
+  {
+    id: 'static-html',
+    module: '@aidevme/a11y-rules-static-html',
+    frameworks: ['static-html'],
+    extensions: ['.html'],
   },
 ];

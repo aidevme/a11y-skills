@@ -6,10 +6,21 @@ export interface FrameworkDetection {
   fluent: boolean;
 }
 
+export interface RunInitOptions {
+  profile: 'strict' | 'standard' | 'mvp';
+  withPrecommit: boolean;
+}
+
 export interface InitResult {
   created: string[];
   updated: string[];
   unchanged: string[];
+}
+
+interface RuleMetaLike {
+  ruleId: string;
+  wcagRef: string;
+  summary: string;
 }
 
 const BEGIN = '<!-- a11y-skills:begin generated -->';
@@ -21,7 +32,61 @@ const POINTER =
 /** Host context files that receive the pointer snippet — only when they already exist. */
 const HOST_FILES = ['CLAUDE.md', '.cursorrules', 'AGENTS.md', '.github/copilot-instructions.md'];
 
-function generatedBlock(detection: FrameworkDetection): string {
+const PROFILE_DESCRIPTIONS: Record<RunInitOptions['profile'], string> = {
+  strict:
+    'Profile: **strict** (WCAG 2.2 AAA target). All rules error. Use for specific components/pages targeting AAA — not as blanket site-wide policy.',
+  standard:
+    'Profile: **standard** (WCAG 2.2 AA target, default). AA-level rules error; AAA-level rules warn.',
+  mvp: 'Profile: **mvp** (WCAG 2.2 A target). Visual/contrast rules relax to warnings; semantic structure rules never relax.',
+};
+
+/**
+ * Metadata source for each pack's generated section (DESIGN §2.3a/§3.3):
+ * one bullet per rule, read straight from that pack's `rules-map.json` — so
+ * this file can never drift from what the audit actually enforces.
+ */
+interface PackSection {
+  frameworkId: string;
+  title: string;
+  mapRelativePath: string;
+  requiresFluent?: boolean;
+}
+
+const PACK_SECTIONS: PackSection[] = [
+  { frameworkId: 'react', title: 'React', mapRelativePath: '../../rules-react/rules-map.json' },
+  {
+    frameworkId: 'react',
+    title: 'Fluent UI v9',
+    mapRelativePath: '../../rules-fluent-ui/rules-map.json',
+    requiresFluent: true,
+  },
+  { frameworkId: 'vue', title: 'Vue', mapRelativePath: '../../rules-vue/rules-map.json' },
+  {
+    frameworkId: 'static-html',
+    title: 'Static HTML',
+    mapRelativePath: '../../rules-static-html/rules-map.json',
+  },
+];
+
+function loadRuleMapSafe(relPath: string): Record<string, RuleMetaLike> | null {
+  try {
+    const url = new URL(relPath, import.meta.url);
+    return JSON.parse(readFileSync(url, 'utf8')) as Record<string, RuleMetaLike>;
+  } catch {
+    return null; // pack not built/present yet — section is simply omitted
+  }
+}
+
+function packSectionMarkdown(title: string, map: Record<string, RuleMetaLike>): string[] {
+  const entries = Object.values(map).sort((a, b) => a.ruleId.localeCompare(b.ruleId));
+  const lines = ['', `## ${title}`, ''];
+  for (const meta of entries) {
+    lines.push(`- ${meta.summary} (\`${meta.ruleId}\`, SC ${meta.wcagRef}).`);
+  }
+  return lines;
+}
+
+function generatedBlock(detection: FrameworkDetection, profile: RunInitOptions['profile']): string {
   const lines: string[] = [];
   lines.push(BEGIN);
   lines.push('');
@@ -31,7 +96,7 @@ function generatedBlock(detection: FrameworkDetection): string {
   lines.push('');
   lines.push('## Compliance target');
   lines.push('');
-  lines.push('- Profile: **standard** (WCAG 2.2 AA). Change via `profile` in `.a11yrc.json`.');
+  lines.push(`- ${PROFILE_DESCRIPTIONS[profile]} Change via \`profile\` in \`.a11yrc.json\`.`);
   lines.push('');
   lines.push('## Core rules (all UI code)');
   lines.push('');
@@ -42,24 +107,15 @@ function generatedBlock(detection: FrameworkDetection): string {
   lines.push('- Every form control needs a programmatically associated label (SC 3.3.2).');
   lines.push('- Maintain a logical heading hierarchy — no skipped levels (SC 1.3.1).');
   lines.push('- Non-interference floor — never violate, at any profile: no keyboard traps (SC 2.1.2), no auto-playing audio without a stop (SC 1.4.2), nothing flashing more than 3×/s (SC 2.3.1), no moving content that cannot be paused (SC 2.2.2).');
-  if (detection.frameworks.includes('react')) {
-    lines.push('');
-    lines.push('## React');
-    lines.push('');
-    lines.push('- Do not attach `onClick` to non-interactive elements without a keyboard handler and a role — prefer `<button>` (SC 2.1.1).');
-    lines.push('- Never use a positive `tabIndex`; it breaks the natural focus order (SC 2.4.3).');
-    lines.push('- Use `htmlFor`/`id` (or nesting) to associate labels with inputs (SC 3.3.2).');
-    lines.push('- Anchors are for navigation; use a button for actions (`react-anchor-is-valid`).');
-    lines.push('- Spell ARIA attributes correctly — the linter validates them (`react-aria-props`).');
+
+  for (const section of PACK_SECTIONS) {
+    if (!detection.frameworks.includes(section.frameworkId)) continue;
+    if (section.requiresFluent && !detection.fluent) continue;
+    const map = loadRuleMapSafe(section.mapRelativePath);
+    if (!map) continue;
+    lines.push(...packSectionMarkdown(section.title, map));
   }
-  if (detection.fluent) {
-    lines.push('');
-    lines.push('## Fluent UI v9');
-    lines.push('');
-    lines.push('- Icon-only `<Button>` requires `aria-label` (`fluent-button-accessible-name`).');
-    lines.push('- Never override `aria-modal` on `<Dialog>` — Fluent manages modal semantics (`fluent-dialog-aria-modal`).');
-    lines.push('- Give `<Field>` a `label` prop; give `<Spinner>` a `label`; give `<Image>` an `alt` (`fluent-field-label`, `fluent-spinner-label`, `fluent-image-alt`).');
-  }
+
   lines.push('');
   lines.push('Run `npx @aidevme/a11y audit` before committing UI changes; findings reference the rule ids above.');
   lines.push('');
@@ -67,23 +123,28 @@ function generatedBlock(detection: FrameworkDetection): string {
   return lines.join('\n');
 }
 
-function defaultConfig(detection: FrameworkDetection): string {
+function defaultConfig(detection: FrameworkDetection, profile: RunInitOptions['profile']): string {
   const rulePacks = [
     ...(detection.frameworks.includes('react') ? ['react'] : []),
     ...(detection.fluent ? ['fluent-ui'] : []),
+    ...(detection.frameworks.includes('vue') ? ['vue'] : []),
+    ...(detection.frameworks.includes('static-html') ? ['static-html'] : []),
   ];
-  return `${JSON.stringify({ rulePacks, profile: 'standard', wcagVersion: '2.2' }, null, 2)}\n`;
+  return `${JSON.stringify({ rulePacks, profile, wcagVersion: '2.2' }, null, 2)}\n`;
 }
 
 /**
  * Idempotent project wiring (DESIGN §2.3a, §4.2): creates or refreshes
  * A11Y.md (generated block between markers, user content preserved), writes
- * .a11yrc.json only if absent, and appends the pointer snippet to each host
- * context file that exists and lacks it. Running twice changes nothing.
+ * .a11yrc.json only if absent, appends the pointer snippet to each host
+ * context file that exists and lacks it, and — when `withPrecommit` is set —
+ * installs the host-independent git pre-commit gate (§4.3, §12.3). Running
+ * twice changes nothing.
  */
 export async function runInit(
   projectRoot: string,
   detection: FrameworkDetection,
+  options: RunInitOptions,
 ): Promise<InitResult> {
   const result: InitResult = { created: [], updated: [], unchanged: [] };
 
@@ -92,13 +153,13 @@ export async function runInit(
   if (existsSync(rcPath)) {
     result.unchanged.push('.a11yrc.json');
   } else {
-    writeFileSync(rcPath, defaultConfig(detection), 'utf8');
+    writeFileSync(rcPath, defaultConfig(detection, options.profile), 'utf8');
     result.created.push('.a11yrc.json');
   }
 
   // A11Y.md — regenerate only the marked block
   const a11yPath = join(projectRoot, 'A11Y.md');
-  const block = generatedBlock(detection);
+  const block = generatedBlock(detection, options.profile);
   if (!existsSync(a11yPath)) {
     writeFileSync(a11yPath, `# A11Y.md — Accessibility guidelines for this project\n\n${block}\n`, 'utf8');
     result.created.push('A11Y.md');
@@ -131,6 +192,20 @@ export async function runInit(
       writeFileSync(hostPath, `${content.trimEnd()}\n\n${POINTER}\n`, 'utf8');
       result.updated.push(rel);
     }
+  }
+
+  // Pre-commit gate — opt-in, host-independent (§4.3)
+  if (options.withPrecommit) {
+    const mod = (await import('@aidevme/a11y-hooks-precommit')) as {
+      installPrecommitHook: (root: string) => { installed: boolean; path: string; reason?: string };
+    };
+    const hookResult = mod.installPrecommitHook(projectRoot);
+    const label = '.git/hooks/pre-commit';
+    if (hookResult.installed) result.updated.push(label);
+    else if (hookResult.reason === 'not-a-git-repo') result.unchanged.push(`${label} (skipped: not a git repo)`);
+    else if (hookResult.reason === 'existing-hook-not-ours')
+      result.unchanged.push(`${label} (skipped: an existing pre-commit hook is already installed)`);
+    else result.unchanged.push(label);
   }
 
   return result;

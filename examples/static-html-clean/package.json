@@ -1,0 +1,5 @@
+{
+  "name": "static-html-clean-fixture",
+  "private": true,
+  "description": "Clean fixture for the rules-static-html pack — must produce zero findings (false-positive gate)"
+}

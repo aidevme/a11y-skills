@@ -21,6 +21,16 @@ const PACKS = [
     note: 'Custom rules for Fluent UI v9 component semantics; runs only when Fluent is detected.',
     file: join(repoRoot, 'packages', 'rules-fluent-ui', 'rules-map.json'),
   },
+  {
+    title: 'rules-vue (`@aidevme/a11y-rules-vue`)',
+    note: 'Wraps eslint-plugin-vuejs-accessibility via vue-eslint-parser.',
+    file: join(repoRoot, 'packages', 'rules-vue', 'rules-map.json'),
+  },
+  {
+    title: 'rules-static-html (`@aidevme/a11y-rules-static-html`)',
+    note: 'Custom DOM-tree walker (no build step) checking landmarks, alt text, label pairing, heading order, lang, and skip links.',
+    file: join(repoRoot, 'packages', 'rules-static-html', 'rules-map.json'),
+  },
 ];
 
 const NON_INTERFERENCE = new Set(['1.4.2', '2.1.2', '2.2.2', '2.3.1']);

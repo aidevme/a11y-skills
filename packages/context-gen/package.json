@@ -11,5 +11,8 @@
   ],
   "scripts": {
     "build": "tsc -b ."
+  },
+  "dependencies": {
+    "@aidevme/a11y-hooks-precommit": "0.0.1"
   }
 }

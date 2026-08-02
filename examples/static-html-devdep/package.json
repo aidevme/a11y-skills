@@ -1,0 +1,5 @@
+{
+  "name": "static-html-detector-fixture",
+  "private": true,
+  "description": "Detector fixture: plain .html file, no framework dependency"
+}

@@ -1,0 +1,11 @@
+[
+  { "ruleId": "vue-alt-text", "file": "src/App.vue", "line": 3, "severity": "error", "wcagRef": "1.1.1" },
+  { "ruleId": "vue-aria-props", "file": "src/App.vue", "line": 8, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "vue-aria-role", "file": "src/App.vue", "line": 7, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "vue-click-events-have-key-events", "file": "src/App.vue", "line": 4, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "vue-click-events-have-key-events", "file": "src/App.vue", "line": 5, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "vue-no-distracting-elements", "file": "src/App.vue", "line": 9, "severity": "error", "wcagRef": "2.2.2" },
+  { "ruleId": "vue-no-static-element-interactions", "file": "src/App.vue", "line": 4, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "vue-no-static-element-interactions", "file": "src/App.vue", "line": 5, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "vue-tabindex-no-positive", "file": "src/App.vue", "line": 6, "severity": "warning", "wcagRef": "2.4.3" }
+]

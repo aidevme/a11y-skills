@@ -21,6 +21,14 @@ declare module '@aidevme/a11y-rules-fluent-ui' {
   export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
 }
 
+declare module '@aidevme/a11y-rules-vue' {
+  export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
+}
+
+declare module '@aidevme/a11y-rules-static-html' {
+  export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
+}
+
 declare module '@aidevme/a11y-reporter-markdown' {
   export function renderMarkdown(input: unknown): string;
 }
@@ -51,5 +59,11 @@ declare module '@aidevme/a11y-context-gen' {
   export function runInit(
     projectRoot: string,
     detection: { frameworks: string[]; fluent: boolean },
+    options: { profile: 'strict' | 'standard' | 'mvp'; withPrecommit: boolean },
   ): Promise<InitResult>;
+}
+
+declare module '@aidevme/a11y-hooks-precommit' {
+  /** Absolute paths of staged, UI-relevant files (git diff --cached, filtered). */
+  export function getStagedFiles(projectRoot: string): string[];
 }

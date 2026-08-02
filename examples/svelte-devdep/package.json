@@ -1,0 +1,8 @@
+{
+  "name": "svelte-devdep-fixture",
+  "private": true,
+  "description": "Detector fixture: svelte dependency present, no .svelte files",
+  "dependencies": {
+    "svelte": "^5.0.0"
+  }
+}

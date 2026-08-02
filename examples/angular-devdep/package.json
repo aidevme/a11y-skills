@@ -1,0 +1,5 @@
+{
+  "name": "angular-devdep-fixture",
+  "private": true,
+  "description": "Detector fixture: angular.json present, no other markers"
+}

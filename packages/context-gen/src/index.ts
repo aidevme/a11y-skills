@@ -9,6 +9,7 @@ export interface FrameworkDetection {
 export interface RunInitOptions {
   profile: 'strict' | 'standard' | 'mvp';
   withPrecommit: boolean;
+  withHooks: boolean;
 }
 
 export interface InitResult {
@@ -61,6 +62,16 @@ const PACK_SECTIONS: PackSection[] = [
     requiresFluent: true,
   },
   { frameworkId: 'vue', title: 'Vue', mapRelativePath: '../../rules-vue/rules-map.json' },
+  {
+    frameworkId: 'angular',
+    title: 'Angular',
+    mapRelativePath: '../../rules-angular/rules-map.json',
+  },
+  {
+    frameworkId: 'svelte',
+    title: 'Svelte',
+    mapRelativePath: '../../rules-svelte/rules-map.json',
+  },
   {
     frameworkId: 'static-html',
     title: 'Static HTML',
@@ -123,14 +134,22 @@ function generatedBlock(detection: FrameworkDetection, profile: RunInitOptions['
   return lines.join('\n');
 }
 
-function defaultConfig(detection: FrameworkDetection, profile: RunInitOptions['profile']): string {
+function defaultConfig(
+  detection: FrameworkDetection,
+  profile: RunInitOptions['profile'],
+  withHooks: boolean,
+): string {
   const rulePacks = [
     ...(detection.frameworks.includes('react') ? ['react'] : []),
     ...(detection.fluent ? ['fluent-ui'] : []),
     ...(detection.frameworks.includes('vue') ? ['vue'] : []),
+    ...(detection.frameworks.includes('angular') ? ['angular'] : []),
+    ...(detection.frameworks.includes('svelte') ? ['svelte'] : []),
     ...(detection.frameworks.includes('static-html') ? ['static-html'] : []),
   ];
-  return `${JSON.stringify({ rulePacks, profile, wcagVersion: '2.2' }, null, 2)}\n`;
+  const config: Record<string, unknown> = { rulePacks, profile, wcagVersion: '2.2' };
+  if (withHooks) config.hooksEnabled = true;
+  return `${JSON.stringify(config, null, 2)}\n`;
 }
 
 /**
@@ -148,12 +167,33 @@ export async function runInit(
 ): Promise<InitResult> {
   const result: InitResult = { created: [], updated: [], unchanged: [] };
 
-  // .a11yrc.json — never overwrite an existing config
+  // .a11yrc.json — never overwrite an existing config wholesale. --with-hooks
+  // is the one exception: hooksEnabled is the sole opt-in marker the shipped
+  // Claude Code hooks self-check (the plugin's hooks.json registers
+  // unconditionally, so this flag is the only per-project toggle), so it is
+  // merge-patched into an existing file rather than silently ignored.
   const rcPath = join(projectRoot, '.a11yrc.json');
   if (existsSync(rcPath)) {
-    result.unchanged.push('.a11yrc.json');
+    if (options.withHooks) {
+      const raw = readFileSync(rcPath, 'utf8');
+      let parsed: Record<string, unknown>;
+      try {
+        parsed = JSON.parse(raw) as Record<string, unknown>;
+      } catch {
+        parsed = {};
+      }
+      if (parsed.hooksEnabled === true) {
+        result.unchanged.push('.a11yrc.json');
+      } else {
+        parsed.hooksEnabled = true;
+        writeFileSync(rcPath, `${JSON.stringify(parsed, null, 2)}\n`, 'utf8');
+        result.updated.push('.a11yrc.json');
+      }
+    } else {
+      result.unchanged.push('.a11yrc.json');
+    }
   } else {
-    writeFileSync(rcPath, defaultConfig(detection, options.profile), 'utf8');
+    writeFileSync(rcPath, defaultConfig(detection, options.profile, options.withHooks), 'utf8');
     result.created.push('.a11yrc.json');
   }
 

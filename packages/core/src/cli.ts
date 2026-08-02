@@ -31,11 +31,14 @@ interface AuditOptions {
   compare?: string;
   claim: boolean;
   prune: boolean;
+  /** Scope the audit to exactly these files instead of scanning `path` — used by the PreToolUse hook to check pending content. */
+  files?: string[];
 }
 
 interface InitOptions {
   path: string;
   withPrecommit: boolean;
+  withHooks: boolean;
 }
 
 const HELP = `Usage: a11y <command> [options]
@@ -45,6 +48,7 @@ Commands:
   baseline   [path]   Snapshot current findings to .a11y-baseline.json (--prune: only remove fixed entries)
   init       [path]   Generate A11Y.md, .a11yrc.json, and host pointer snippets
                        --with-precommit  also install a git pre-commit hook (staged files only)
+                       --with-hooks      enable the Claude Code UserPromptSubmit/PreToolUse hooks
   precommit  [path]   Internal: run the fast staged-files-only gate (installed by init --with-precommit)
 
 Audit options:
@@ -56,6 +60,7 @@ Audit options:
   --crawl                       Runtime: follow same-origin links one level deep
   --compare <report.html>       HTML format: render trend vs a previous report
   --claim                       HTML/JSON: include a conformance-claim block
+  --files <a,b,c>                Scope the audit to exactly these files instead of scanning <path> (internal — used by the PreToolUse hook)
 
 Exit codes: 0 = clean or below threshold, 1 = findings at/above threshold, 2 = execution error.
 Baselined findings are reported but never fail; non-interference findings always fail.`;
@@ -71,6 +76,7 @@ function parseArgs(args: string[]): AuditOptions {
     claim: false,
     prune: false,
   };
+  const filesFlag: string[] = [];
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--format') {
@@ -103,19 +109,25 @@ function parseArgs(args: string[]): AuditOptions {
       opts.claim = true;
     } else if (arg === '--prune') {
       opts.prune = true;
+    } else if (arg === '--files') {
+      const v = args[++i];
+      if (!v) throw new CliError('missing value for --files');
+      filesFlag.push(...v.split(',').filter(Boolean));
     } else if (arg.startsWith('--')) {
       throw new CliError(`unknown option: ${arg}`);
     } else {
       opts.path = arg;
     }
   }
+  if (filesFlag.length > 0) opts.files = filesFlag;
   return opts;
 }
 
 function parseInitArgs(args: string[]): InitOptions {
-  const opts: InitOptions = { path: '.', withPrecommit: false };
+  const opts: InitOptions = { path: '.', withPrecommit: false, withHooks: false };
   for (const arg of args) {
     if (arg === '--with-precommit') opts.withPrecommit = true;
+    else if (arg === '--with-hooks') opts.withHooks = true;
     else if (arg.startsWith('--')) throw new CliError(`unknown option: ${arg}`);
     else opts.path = arg;
   }
@@ -196,7 +208,7 @@ function extractPreviousFindings(reportPath: string): unknown[] {
 async function audit(opts: AuditOptions): Promise<number> {
   const root = resolveRoot(opts.path);
   const config = loadConfig(root);
-  const { findings, frameworks } = await collectFindings(root, config, opts);
+  const { findings, frameworks } = await collectFindings(root, config, opts, opts.files);
 
   const meta = {
     profile: config.profile,
@@ -269,6 +281,7 @@ async function init(args: string[]): Promise<number> {
   const result = await runInit(root, detectFrameworks(root), {
     profile: config.profile,
     withPrecommit: opts.withPrecommit,
+    withHooks: opts.withHooks,
   });
   for (const f of result.created) console.log(`created   ${f}`);
   for (const f of result.updated) console.log(`updated   ${f}`);

@@ -66,4 +66,25 @@ describe('detectFrameworks', () => {
       fluent: false,
     });
   });
+
+  it('TC-P4.1: angular.json present → angular', () => {
+    expect(detectFrameworks(fixture('angular-devdep'))).toEqual({
+      frameworks: ['angular'],
+      fluent: false,
+    });
+  });
+
+  it('TC-P4.1: svelte dep with no .svelte files → svelte', () => {
+    expect(detectFrameworks(fixture('svelte-devdep'))).toEqual({
+      frameworks: ['svelte'],
+      fluent: false,
+    });
+  });
+
+  it('TC-P4.1: .svelte files → svelte (file marker suffices)', () => {
+    expect(detectFrameworks(fixture('svelte-seeded'))).toEqual({
+      frameworks: ['svelte'],
+      fluent: false,
+    });
+  });
 });

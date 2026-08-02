@@ -3,7 +3,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'n
 import { join } from 'node:path';
 
 /** File extensions the pre-commit gate considers "UI-relevant" — mirrors the registry's pack extensions. */
-export const UI_EXTENSIONS = ['.tsx', '.jsx', '.vue', '.html'];
+export const UI_EXTENSIONS = ['.tsx', '.jsx', '.vue', '.svelte', '.html'];
 
 /**
  * Returns absolute paths of staged files (added/copied/modified — not

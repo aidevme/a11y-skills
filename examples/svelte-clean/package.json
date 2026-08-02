@@ -1,0 +1,8 @@
+{
+  "name": "svelte-clean-fixture",
+  "private": true,
+  "description": "Clean fixture for the rules-svelte pack — must produce zero findings (false-positive gate)",
+  "dependencies": {
+    "svelte": "^5.0.0"
+  }
+}

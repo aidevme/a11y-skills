@@ -11,6 +11,7 @@ export interface FrameworkDetection {
 interface FileMarkers {
   hasReactFile: boolean;
   hasVueFile: boolean;
+  hasSvelteFile: boolean;
   hasHtmlFile: boolean;
 }
 
@@ -41,6 +42,7 @@ function scanFileMarkers(dir: string, markers: FileMarkers): void {
     }
     if (entry.endsWith('.tsx') || entry.endsWith('.jsx')) markers.hasReactFile = true;
     else if (entry.endsWith('.vue')) markers.hasVueFile = true;
+    else if (entry.endsWith('.svelte')) markers.hasSvelteFile = true;
     else if (entry.endsWith('.html')) markers.hasHtmlFile = true;
   }
 }
@@ -50,10 +52,19 @@ function scanFileMarkers(dir: string, markers: FileMarkers): void {
  * ("all-match" per the registry — a repo can be React AND Vue at once).
  * Static HTML is the one exception: it only fires when no other framework
  * matched, since it is explicitly the fallback case (§2.2).
+ *
+ * Angular is detected via `angular.json` or the `@angular/core` dependency
+ * rather than a file-extension marker, since Angular component templates
+ * are plain `.html` files — there is no `.angular` extension to scan for.
  */
 export function detectFrameworks(projectRoot: string): FrameworkDetection {
   const deps = readDeps(projectRoot);
-  const markers: FileMarkers = { hasReactFile: false, hasVueFile: false, hasHtmlFile: false };
+  const markers: FileMarkers = {
+    hasReactFile: false,
+    hasVueFile: false,
+    hasSvelteFile: false,
+    hasHtmlFile: false,
+  };
   scanFileMarkers(projectRoot, markers);
 
   const frameworks: string[] = [];
@@ -63,6 +74,12 @@ export function detectFrameworks(projectRoot: string): FrameworkDetection {
 
   const hasVue = 'vue' in deps || markers.hasVueFile;
   if (hasVue) frameworks.push('vue');
+
+  const hasAngular = existsSync(join(projectRoot, 'angular.json')) || '@angular/core' in deps;
+  if (hasAngular) frameworks.push('angular');
+
+  const hasSvelte = 'svelte' in deps || markers.hasSvelteFile;
+  if (hasSvelte) frameworks.push('svelte');
 
   if (frameworks.length === 0 && markers.hasHtmlFile) {
     frameworks.push('static-html');

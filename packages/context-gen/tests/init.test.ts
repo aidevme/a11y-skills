@@ -10,7 +10,7 @@ const REACT_ONLY: FrameworkDetection = { frameworks: ['react'], fluent: false };
 const VUE_ONLY: FrameworkDetection = { frameworks: ['vue'], fluent: false };
 const STATIC_HTML_ONLY: FrameworkDetection = { frameworks: ['static-html'], fluent: false };
 const NONE: FrameworkDetection = { frameworks: [], fluent: false };
-const STANDARD: RunInitOptions = { profile: 'standard', withPrecommit: false };
+const STANDARD: RunInitOptions = { profile: 'standard', withPrecommit: false, withHooks: false };
 
 function tmpProject(files: Record<string, string> = {}): string {
   const dir = mkdtempSync(join(tmpdir(), 'a11y-init-'));
@@ -116,6 +116,22 @@ describe('a11y init (context-gen)', () => {
     expect(content).not.toContain('## React');
   });
 
+  it('TC-P4.1: Angular detection generates a metadata-driven Angular section', async () => {
+    const dir = tmpProject();
+    await runInit(dir, { frameworks: ['angular'], fluent: false }, STANDARD);
+    const content = readFileSync(join(dir, 'A11Y.md'), 'utf8');
+    expect(content).toContain('## Angular');
+    expect(content).toMatch(/`angular-alt-text`/);
+  });
+
+  it('TC-P4.1: Svelte detection generates a metadata-driven Svelte section', async () => {
+    const dir = tmpProject();
+    await runInit(dir, { frameworks: ['svelte'], fluent: false }, STANDARD);
+    const content = readFileSync(join(dir, 'A11Y.md'), 'utf8');
+    expect(content).toContain('## Svelte');
+    expect(content).toMatch(/`svelte-no-target-blank`/);
+  });
+
   it('TC-P3.3: static-html detection generates a metadata-driven Static HTML section', async () => {
     const dir = tmpProject();
     await runInit(dir, STATIC_HTML_ONLY, STANDARD);
@@ -138,12 +154,12 @@ describe('a11y init (context-gen)', () => {
 
   it('TC-P3.3-04: switching profile changes only the compliance-target wording', async () => {
     const standardDir = tmpProject();
-    await runInit(standardDir, REACT_ONLY, { profile: 'standard', withPrecommit: false });
+    await runInit(standardDir, REACT_ONLY, { profile: 'standard', withPrecommit: false, withHooks: false });
     const standard = readFileSync(join(standardDir, 'A11Y.md'), 'utf8');
     expect(standard).toContain('Profile: **standard**');
 
     const mvpDir = tmpProject();
-    await runInit(mvpDir, REACT_ONLY, { profile: 'mvp', withPrecommit: false });
+    await runInit(mvpDir, REACT_ONLY, { profile: 'mvp', withPrecommit: false, withHooks: false });
     const mvp = readFileSync(join(mvpDir, 'A11Y.md'), 'utf8');
     expect(mvp).toContain('Profile: **mvp**');
     expect(mvp).toContain('semantic structure rules never relax');
@@ -178,7 +194,7 @@ describe('a11y init (context-gen)', () => {
 
     it('TC-P3.4: installs the git pre-commit hook when requested', async () => {
       const dir = initGitRepo();
-      const result = await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true });
+      const result = await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true, withHooks: false });
       expect(result.updated).toContain('.git/hooks/pre-commit');
       expect(existsSync(join(dir, '.git', 'hooks', 'pre-commit'))).toBe(true);
     });
@@ -191,15 +207,61 @@ describe('a11y init (context-gen)', () => {
 
     it('is idempotent: second run with --with-precommit reports unchanged', async () => {
       const dir = initGitRepo();
-      await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true });
-      const second = await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true });
+      await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true, withHooks: false });
+      const second = await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true, withHooks: false });
       expect(second.updated).not.toContain('.git/hooks/pre-commit');
     });
 
     it('outside a git repo, reports the skip reason instead of throwing', async () => {
       const dir = tmpProject();
-      const result = await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true });
+      const result = await runInit(dir, REACT_ONLY, { profile: 'standard', withPrecommit: true, withHooks: false });
       expect(result.unchanged.some((u) => u.includes('not a git repo'))).toBe(true);
+    });
+  });
+
+  describe('--with-hooks', () => {
+    const WITH_HOOKS: RunInitOptions = { profile: 'standard', withPrecommit: false, withHooks: true };
+
+    it('TC-P4.2: sets hooksEnabled: true in a freshly created .a11yrc.json', async () => {
+      const dir = tmpProject();
+      const result = await runInit(dir, REACT_ONLY, WITH_HOOKS);
+      expect(result.created).toContain('.a11yrc.json');
+      const config = JSON.parse(readFileSync(join(dir, '.a11yrc.json'), 'utf8'));
+      expect(config.hooksEnabled).toBe(true);
+    });
+
+    it('does not set hooksEnabled when --with-hooks is not requested', async () => {
+      const dir = tmpProject();
+      await runInit(dir, REACT_ONLY, STANDARD);
+      const config = JSON.parse(readFileSync(join(dir, '.a11yrc.json'), 'utf8'));
+      expect(config.hooksEnabled).toBeUndefined();
+    });
+
+    it('TC-P4.2: merge-patches hooksEnabled: true into an existing .a11yrc.json, preserving other fields', async () => {
+      const custom = '{\n  "profile": "mvp",\n  "rulePacks": ["react"]\n}\n';
+      const dir = tmpProject({ '.a11yrc.json': custom });
+      const result = await runInit(dir, REACT_ONLY, WITH_HOOKS);
+      expect(result.updated).toContain('.a11yrc.json');
+      const config = JSON.parse(readFileSync(join(dir, '.a11yrc.json'), 'utf8'));
+      expect(config.hooksEnabled).toBe(true);
+      expect(config.profile).toBe('mvp');
+      expect(config.rulePacks).toEqual(['react']);
+    });
+
+    it('is idempotent: second run with --with-hooks reports unchanged', async () => {
+      const dir = tmpProject();
+      await runInit(dir, REACT_ONLY, WITH_HOOKS);
+      const second = await runInit(dir, REACT_ONLY, WITH_HOOKS);
+      expect(second.unchanged).toContain('.a11yrc.json');
+      expect(second.updated).not.toContain('.a11yrc.json');
+    });
+
+    it('without --with-hooks, an existing .a11yrc.json is still never overwritten', async () => {
+      const custom = '{"profile":"mvp"}\n';
+      const dir = tmpProject({ '.a11yrc.json': custom });
+      const result = await runInit(dir, REACT_ONLY, STANDARD);
+      expect(readFileSync(join(dir, '.a11yrc.json'), 'utf8')).toBe(custom);
+      expect(result.unchanged).toContain('.a11yrc.json');
     });
   });
 });

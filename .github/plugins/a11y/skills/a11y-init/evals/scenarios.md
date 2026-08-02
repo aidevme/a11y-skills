@@ -7,4 +7,4 @@
 | TC-P1.8-03 | Project with no host files | Only A11Y.md + .a11yrc.json created; no host file invented |
 | TC-P1.8-05 | Existing `.a11yrc.json` | Left untouched; reported unchanged |
 | TC-P1.8-07 | React+Fluent project | A11Y.md contains React and Fluent sections; no PCF/Power Pages content |
-| extra | User asks for `--with-hooks` | Skill says hooks ship in a later version (v1.6); does not fake them |
+| TC-P4.2 | User asks for `--with-hooks` | Skill runs `a11y init --with-hooks`, which merge-patches `hooksEnabled: true` into `.a11yrc.json`; see `../../hooks/evals/scenarios.md` for what the hooks themselves then do |

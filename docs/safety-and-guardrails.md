@@ -22,14 +22,24 @@ The only network activity the toolkit can cause is the runtime layer fetching th
 - `a11y init` writes `A11Y.md`, `.a11yrc.json` (if absent), and pointer snippets in host context files (`CLAUDE.md`, `.cursorrules`, `copilot-instructions.md`, `AGENTS.md`) — idempotently, and only in the project root it is run in.
 - `a11y baseline` writes `.a11y-baseline.json`.
 
-## What the hooks may block (opt-in, ships in v1.6)
+## What the hooks may block (opt-in, v1.6)
 
-The optional Claude Code hooks are **disabled unless you install them** via `a11y-init --with-hooks`:
+The plugin ships two Claude Code hooks at `.github/plugins/a11y/hooks/hooks.json` (`UserPromptSubmit`, `PreToolUse`). Installing the plugin registers both unconditionally — Claude Code has no native per-project toggle for plugin hooks — but **both scripts self-check `.a11yrc.json`'s `hooksEnabled` field first and exit as a silent no-op (`{}`, allow) whenever it is absent or not exactly `true`.** That field defaults to `false` and is the only thing that turns the hooks on. Set it by running:
 
-- **UserPromptSubmit** injects accessibility guidance into UI-related prompts. It never blocks anything.
-- **PreToolUse** can deny an Edit/Write to UI file types (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, Liquid templates, `ControlManifest.Input.xml`) when the fast static lint of the pending change reports violations. The denial reason lists the violations so the agent can correct and retry. It checks only the pending change, never the whole repository.
+```sh
+npx @aidevme/a11y init --with-hooks
+```
 
-To disable enforcement at any time, remove the hooks from your Claude Code settings or rerun `a11y init` without `--with-hooks`.
+which merge-patches `hooksEnabled: true` into `.a11yrc.json` (creating the file with sane defaults if it doesn't exist yet) without touching any other field you've set.
+
+- **UserPromptSubmit** classifies the prompt text against a keyword table (dialog/modal, form/label/validation, keyboard/tabindex/focus-order, plus a broader UI/component/ARIA/WCAG signal) mirroring the `a11y-overview` skill's routing table. When it matches, it injects a short accessibility reminder and the relevant topic-guide name as additional context. **It never blocks anything and always exits 0**, even on malformed input.
+- **PreToolUse** (matcher `Write|Edit`) only acts on files with a lintable UI extension (`.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`). It reconstructs the file's content *as it would read after the pending write* — the literal `content` for `Write`, or the current on-disk content with `old_string`→`new_string` applied for `Edit` — writes that to a throwaway temp file next to the real one, and runs `npx --yes @aidevme/a11y audit --files <temp>` (Layer 1, static rules only) against it. If any `error`-severity finding comes back, it denies the write with `permissionDecision: "deny"` and lists every violation (rule id, line, message, WCAG SC) in the reason so the agent can fix and retry. The temp file is always deleted afterward, whether the check passes, fails, or errors.
+- **Recognized but not yet enforced**: `ControlManifest.Input.xml` (PCF) and `.liquid` (Power Pages) are classified as UI surfaces for future use, but no rule pack exists for them until later phases — writes to these are currently **allowed**, not checked. Don't rely on the hook for these file types yet.
+- **Fails open, always.** If the check itself can't complete — `npx` isn't on `PATH`, the package fetch fails, the 15-second timeout is hit, the CLI's own JSON output doesn't parse, or an `Edit`'s `old_string` can't be found in the current file — the hook allows the write rather than blocking it. A malfunctioning gate must never be able to stop you from working; missing an occasional finding is the acceptable failure mode, not a stuck session.
+- **Performance is honest, not padded.** The design target is "low single-digit seconds," which holds once `npx`'s local cache is warm. The very first invocation in a fresh environment can cost more (package resolution before anything is cached), so the hook's own timeout is set to 15s to avoid false hard-failures on that first run rather than to represent the typical case.
+- Only ever reads the single file being written and `.a11yrc.json`; only ever writes the one throwaway temp file it creates and removes; makes no network calls beyond what `npx` needs to resolve `@aidevme/a11y` from your configured registry.
+
+**To disable:** installing the plugin does not, by itself, do anything — leave `hooksEnabled` unset (or `false`) and both hooks stay inert. Once enabled, turn it back off by setting `"hooksEnabled": false` in `.a11yrc.json` (`a11y init` never sets this key back to `false` for you — like the git pre-commit gate, opting out is a deliberate, direct edit, not an automatic side effect of a flag you stop passing). Uninstalling or disabling the plugin in Claude Code removes both hooks entirely, regardless of the config.
 
 ## Scope guarantees
 

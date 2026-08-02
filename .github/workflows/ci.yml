@@ -8,6 +8,9 @@ on:
 jobs:
   build-test-validate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - uses: actions/checkout@v5
 
@@ -52,8 +55,11 @@ jobs:
           node packages/core/dist/cli.js audit packages --format sarif --fail-on never --output /tmp/a11y-self.sarif
           node packages/core/dist/cli.js audit packages --format html --fail-on never --output /tmp/a11y-self.html
 
+      # Forked-repo PRs always get a read-only token, regardless of the
+      # `permissions:` block above — code-scanning upload can never succeed
+      # there, so skip it rather than emit a permissions warning every run.
       - name: Upload dogfood SARIF to code scanning
-        if: always()
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: /tmp/a11y-self.sarif

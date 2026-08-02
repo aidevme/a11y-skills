@@ -74,6 +74,75 @@ Wraps eslint-plugin-vuejs-accessibility via vue-eslint-parser.
 | `vue-role-has-required-aria-props` | error | 4.1.2 | A | 2.0 | semantic | Elements with an ARIA role must carry that role's required properties. |
 | `vue-tabindex-no-positive` | warning | 2.4.3 | A | 2.0 | interaction | Positive tabindex breaks the natural focus order. |
 
+## rules-angular (`@aidevme/a11y-rules-angular`)
+
+Wraps @angular-eslint/eslint-plugin-template; scoped to *.component.html only.
+
+| Rule | Severity | WCAG SC | Level | Since | Category | Summary |
+| --- | --- | --- | --- | --- | --- | --- |
+| `angular-alt-text` | error | 1.1.1 | A | 2.0 | semantic | Images and media elements require alternative text. |
+| `angular-click-events-have-key-events` | warning | 2.1.1 | A | 2.0 | interaction | Clickable non-interactive elements need a keyboard handler. |
+| `angular-elements-content` | error | 2.4.4 | A | 2.0 | semantic | Elements such as headings, anchors, and buttons must have discernible textual content. |
+| `angular-interactive-supports-focus` | warning | 2.1.1 | A | 2.0 | interaction | Elements with an interactive role must be focusable. |
+| `angular-label-has-associated-control` | error | 3.3.2 | A | 2.0 | semantic | Labels must be associated with a form control (for/id or nesting). |
+| `angular-mouse-events-have-key-events` | warning | 2.1.1 | A | 2.0 | interaction | (mouseover)/(mouseout) require (focus)/(blur) for keyboard users. |
+| `angular-no-autofocus` | warning | 2.4.3 | A | 2.0 | interaction | autofocus disorients screen reader and keyboard users. |
+| `angular-no-distracting-elements` | error | 2.2.2 ⚠NI | A | 2.0 | semantic | marquee/blink are distracting and cannot be paused (non-interference criterion). |
+| `angular-no-positive-tabindex` | warning | 2.4.3 | A | 2.0 | interaction | Positive tabindex breaks the natural focus order. |
+| `angular-role-has-required-aria` | error | 4.1.2 | A | 2.0 | semantic | Elements with an ARIA role must carry that role's required properties. |
+| `angular-table-scope` | error | 1.3.1 | A | 2.0 | semantic | scope attribute is only valid on table header cells. |
+| `angular-valid-aria` | error | 4.1.2 | A | 2.0 | semantic | aria-* attributes must be valid ARIA properties. |
+
+## rules-svelte (`@aidevme/a11y-rules-svelte`)
+
+Captures the Svelte compiler's own a11y_* warnings directly, plus eslint-plugin-svelte for checks the compiler does not cover (e.g. no-target-blank).
+
+| Rule | Severity | WCAG SC | Level | Since | Category | Summary |
+| --- | --- | --- | --- | --- | --- | --- |
+| `svelte-a11y-accesskey` | warning | 2.1.1 | A | 2.0 | interaction | accesskey conflicts with screen reader and keyboard shortcuts. |
+| `svelte-a11y-aria-activedescendant-has-tabindex` | error | 4.1.2 | A | 2.0 | semantic | An element with aria-activedescendant must be focusable (have a tabindex). |
+| `svelte-a11y-aria-attributes` | error | 4.1.2 | A | 2.0 | semantic | Elements that cannot carry ARIA must not have aria-* attributes. |
+| `svelte-a11y-autocomplete-valid` | warning | 1.3.5 | AA | 2.1 | semantic | autocomplete value must be a valid token. |
+| `svelte-a11y-autofocus` | warning | 2.4.3 | A | 2.0 | interaction | autofocus disorients screen reader and keyboard users. |
+| `svelte-a11y-click-events-have-key-events` | warning | 2.1.1 | A | 2.0 | interaction | Clickable non-interactive elements need a keyboard handler. |
+| `svelte-a11y-consider-explicit-label` | warning | 3.3.2 | A | 2.0 | semantic | Prefer an explicit label association over an implicit one. |
+| `svelte-a11y-distracting-elements` | error | 2.2.2 ⚠NI | A | 2.0 | semantic | marquee/blink are distracting and cannot be paused (non-interference criterion). |
+| `svelte-a11y-figcaption-index` | warning | 1.3.1 | A | 2.0 | semantic | figcaption must be the first or last child of figure. |
+| `svelte-a11y-figcaption-parent` | warning | 1.3.1 | A | 2.0 | semantic | figcaption must be a direct child of figure. |
+| `svelte-a11y-hidden` | warning | 4.1.2 | A | 2.0 | semantic | This element should not be hidden from assistive technology. |
+| `svelte-a11y-img-redundant-alt` | warning | 1.1.1 | A | 2.0 | semantic | alt text must not contain redundant words like "image" or "picture". |
+| `svelte-a11y-incorrect-aria-attribute-type` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute value does not match the expected type. |
+| `svelte-a11y-incorrect-aria-attribute-type-boolean` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must be a boolean value (true/false). |
+| `svelte-a11y-incorrect-aria-attribute-type-id` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must reference a single element id. |
+| `svelte-a11y-incorrect-aria-attribute-type-idlist` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must reference a space-separated list of element ids. |
+| `svelte-a11y-incorrect-aria-attribute-type-integer` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must be an integer value. |
+| `svelte-a11y-incorrect-aria-attribute-type-token` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must be one of a fixed set of token values. |
+| `svelte-a11y-incorrect-aria-attribute-type-tokenlist` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must be a space-separated list of token values. |
+| `svelte-a11y-incorrect-aria-attribute-type-tristate` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute must be true, false, or mixed. |
+| `svelte-a11y-interactive-supports-focus` | warning | 2.1.1 | A | 2.0 | interaction | Elements with an interactive role must be focusable. |
+| `svelte-a11y-invalid-attribute` | error | 4.1.2 | A | 2.0 | semantic | Attribute value is invalid (e.g. an href of just "#"). |
+| `svelte-a11y-label-has-associated-control` | error | 3.3.2 | A | 2.0 | semantic | Labels must be associated with a form control (for/id or nesting). |
+| `svelte-a11y-media-has-caption` | warning | 1.2.2 | A | 2.0 | semantic | audio/video elements need captions. |
+| `svelte-a11y-misplaced-role` | error | 4.1.2 | A | 2.0 | semantic | This element cannot carry an ARIA role. |
+| `svelte-a11y-misplaced-scope` | error | 1.3.1 | A | 2.0 | semantic | scope attribute is only valid on table header cells. |
+| `svelte-a11y-missing-attribute` | error | 1.1.1 | A | 2.0 | semantic | This element is missing a required attribute (most commonly alt on img). |
+| `svelte-a11y-missing-content` | error | 2.4.4 | A | 2.0 | semantic | Heading/anchor elements must have discernible text content. |
+| `svelte-a11y-mouse-events-have-key-events` | warning | 2.1.1 | A | 2.0 | interaction | onmouseover/onmouseout require onfocus/onblur for keyboard users. |
+| `svelte-a11y-no-abstract-role` | error | 4.1.2 | A | 2.0 | semantic | Abstract ARIA roles cannot be used directly. |
+| `svelte-a11y-no-interactive-element-to-noninteractive-role` | error | 4.1.2 | A | 2.0 | semantic | Do not assign a non-interactive role to a naturally interactive element. |
+| `svelte-a11y-no-noninteractive-element-interactions` | warning | 2.1.1 | A | 2.0 | interaction | Non-interactive elements should not have interactive event handlers without a supporting role. |
+| `svelte-a11y-no-noninteractive-element-to-interactive-role` | error | 4.1.2 | A | 2.0 | semantic | Do not assign an interactive role to a naturally non-interactive, static element. |
+| `svelte-a11y-no-noninteractive-tabindex` | warning | 2.4.3 | A | 2.0 | interaction | Non-interactive elements should not be in the tab order. |
+| `svelte-a11y-no-redundant-roles` | warning | 4.1.2 | A | 2.0 | semantic | Redundant explicit roles (e.g. role="button" on button) add noise. |
+| `svelte-a11y-no-static-element-interactions` | warning | 2.1.1 | A | 2.0 | interaction | Static elements with event handlers need an interactive role and keyboard support. |
+| `svelte-a11y-positive-tabindex` | warning | 2.4.3 | A | 2.0 | interaction | Positive tabindex breaks the natural focus order. |
+| `svelte-a11y-role-has-required-aria-props` | error | 4.1.2 | A | 2.0 | semantic | Elements with an ARIA role must carry that role's required properties. |
+| `svelte-a11y-role-supports-aria-props` | error | 4.1.2 | A | 2.0 | semantic | aria-* attributes must be supported by the element's role. |
+| `svelte-a11y-role-supports-aria-props-implicit` | error | 4.1.2 | A | 2.0 | semantic | aria-* attributes must be supported by the element's implicit role. |
+| `svelte-a11y-unknown-aria-attribute` | error | 4.1.2 | A | 2.0 | semantic | aria-* attribute is not a recognized ARIA property. |
+| `svelte-a11y-unknown-role` | error | 4.1.2 | A | 2.0 | semantic | role value is not a valid ARIA role. |
+| `svelte-no-target-blank` | warning | 3.2.5 | AAA | 2.0 | interaction | target="_blank" opens a new window without warning the user; pair with rel="noopener noreferrer" and consider avoiding it. |
+
 ## rules-static-html (`@aidevme/a11y-rules-static-html`)
 
 Custom DOM-tree walker (no build step) checking landmarks, alt text, label pairing, heading order, lang, and skip links.
@@ -88,4 +157,4 @@ Custom DOM-tree walker (no build step) checking landmarks, alt text, label pairi
 | `html-lang-missing` | error | 3.1.1 | A | 2.0 | semantic | The html element must declare a lang attribute so assistive tech uses the right pronunciation/voice. |
 | `html-skip-link` | error | 2.4.1 | A | 2.0 | semantic | Pages with repeated navigation need a mechanism (e.g. a skip link) to bypass it. |
 
-_57 rules total. ⚠NI marks WCAG non-interference criteria (never profile-relaxed, never baseline-eligible)._
+_112 rules total. ⚠NI marks WCAG non-interference criteria (never profile-relaxed, never baseline-eligible)._

@@ -17,6 +17,7 @@ export interface A11yConfig {
     viewports?: ('mobile' | 'tablet' | 'desktop')[];
   };
   processes?: Record<string, string[]>;
+  hooksEnabled: boolean;
 }
 
 export class ConfigError extends Error {}
@@ -66,5 +67,6 @@ export function loadConfig(projectRoot: string): A11yConfig {
     overrides: (data.overrides as A11yConfig['overrides']) ?? {},
     runtime: data.runtime as A11yConfig['runtime'],
     processes: data.processes as A11yConfig['processes'],
+    hooksEnabled: (data.hooksEnabled as boolean | undefined) ?? false,
   };
 }

@@ -1,0 +1,8 @@
+{
+  "name": "svelte-seeded-fixture",
+  "private": true,
+  "description": "Seeded-violation fixture for the rules-svelte pack — every violation is deliberate",
+  "dependencies": {
+    "svelte": "^5.0.0"
+  }
+}

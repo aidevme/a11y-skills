@@ -1,0 +1,21 @@
+{
+  "name": "@aidevme/a11y-rules-angular",
+  "version": "0.0.1",
+  "description": "Angular (@angular-eslint/template) Layer 1 rule pack for the a11y-skills audit toolkit",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "rules-map.json"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "@angular-eslint/eslint-plugin-template": "22.1.0",
+    "@angular-eslint/template-parser": "22.1.0",
+    "eslint": "^9.0.0 || ^10.0.0"
+  }
+}

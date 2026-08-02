@@ -68,6 +68,11 @@
           "type": "string"
         }
       }
+    },
+    "hooksEnabled": {
+      "description": "Opt-in switch for the Claude Code UserPromptSubmit/PreToolUse enforcement hooks (DESIGN.md section 2.3d). Set by `a11y init --with-hooks`; the hook scripts check this field themselves and no-op when false/absent, since Claude Code plugin hooks are otherwise always registered once the plugin is installed.",
+      "type": "boolean",
+      "default": false
     }
   }
 }

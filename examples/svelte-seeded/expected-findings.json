@@ -1,0 +1,8 @@
+[
+  { "ruleId": "svelte-a11y-click-events-have-key-events", "file": "src/App.svelte", "line": 8, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "svelte-a11y-missing-attribute", "file": "src/App.svelte", "line": 7, "severity": "error", "wcagRef": "1.1.1" },
+  { "ruleId": "svelte-a11y-no-noninteractive-tabindex", "file": "src/App.svelte", "line": 9, "severity": "warning", "wcagRef": "2.4.3" },
+  { "ruleId": "svelte-a11y-no-static-element-interactions", "file": "src/App.svelte", "line": 8, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "svelte-a11y-positive-tabindex", "file": "src/App.svelte", "line": 9, "severity": "warning", "wcagRef": "2.4.3" },
+  { "ruleId": "svelte-no-target-blank", "file": "src/App.svelte", "line": 10, "severity": "warning", "wcagRef": "3.2.5" }
+]

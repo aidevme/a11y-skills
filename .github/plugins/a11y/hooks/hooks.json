@@ -1,0 +1,29 @@
+{
+  "description": "Opt-in accessibility enforcement (DESIGN.md §2.3d). Disabled by default — enable with `a11y init --with-hooks`, which sets hooksEnabled: true in the project's .a11yrc.json. Both scripts check that flag themselves and no-op instantly when it's absent, since Claude Code registers plugin hooks unconditionally once the plugin is installed.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/user-prompt-submit.mjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-tool-use.mjs",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

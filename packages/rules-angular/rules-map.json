@@ -1,0 +1,110 @@
+{
+  "alt-text": {
+    "ruleId": "angular-alt-text",
+    "severity": "error",
+    "wcagRef": "1.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Images and media elements require alternative text."
+  },
+  "click-events-have-key-events": {
+    "ruleId": "angular-click-events-have-key-events",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Clickable non-interactive elements need a keyboard handler."
+  },
+  "elements-content": {
+    "ruleId": "angular-elements-content",
+    "severity": "error",
+    "wcagRef": "2.4.4",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Elements such as headings, anchors, and buttons must have discernible textual content."
+  },
+  "interactive-supports-focus": {
+    "ruleId": "angular-interactive-supports-focus",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Elements with an interactive role must be focusable."
+  },
+  "label-has-associated-control": {
+    "ruleId": "angular-label-has-associated-control",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Labels must be associated with a form control (for/id or nesting)."
+  },
+  "mouse-events-have-key-events": {
+    "ruleId": "angular-mouse-events-have-key-events",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "(mouseover)/(mouseout) require (focus)/(blur) for keyboard users."
+  },
+  "no-autofocus": {
+    "ruleId": "angular-no-autofocus",
+    "severity": "warning",
+    "wcagRef": "2.4.3",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "autofocus disorients screen reader and keyboard users."
+  },
+  "no-distracting-elements": {
+    "ruleId": "angular-no-distracting-elements",
+    "severity": "error",
+    "wcagRef": "2.2.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "marquee/blink are distracting and cannot be paused (non-interference criterion)."
+  },
+  "no-positive-tabindex": {
+    "ruleId": "angular-no-positive-tabindex",
+    "severity": "warning",
+    "wcagRef": "2.4.3",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Positive tabindex breaks the natural focus order."
+  },
+  "role-has-required-aria": {
+    "ruleId": "angular-role-has-required-aria",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Elements with an ARIA role must carry that role's required properties."
+  },
+  "table-scope": {
+    "ruleId": "angular-table-scope",
+    "severity": "error",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "scope attribute is only valid on table header cells."
+  },
+  "valid-aria": {
+    "ruleId": "angular-valid-aria",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "aria-* attributes must be valid ARIA properties."
+  }
+}

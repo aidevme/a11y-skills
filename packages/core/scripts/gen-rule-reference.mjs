@@ -27,6 +27,16 @@ const PACKS = [
     file: join(repoRoot, 'packages', 'rules-vue', 'rules-map.json'),
   },
   {
+    title: 'rules-angular (`@aidevme/a11y-rules-angular`)',
+    note: 'Wraps @angular-eslint/eslint-plugin-template; scoped to *.component.html only.',
+    file: join(repoRoot, 'packages', 'rules-angular', 'rules-map.json'),
+  },
+  {
+    title: 'rules-svelte (`@aidevme/a11y-rules-svelte`)',
+    note: 'Captures the Svelte compiler\'s own a11y_* warnings directly, plus eslint-plugin-svelte for checks the compiler does not cover (e.g. no-target-blank).',
+    file: join(repoRoot, 'packages', 'rules-svelte', 'rules-map.json'),
+  },
+  {
     title: 'rules-static-html (`@aidevme/a11y-rules-static-html`)',
     note: 'Custom DOM-tree walker (no build step) checking landmarks, alt text, label pairing, heading order, lang, and skip links.',
     file: join(repoRoot, 'packages', 'rules-static-html', 'rules-map.json'),

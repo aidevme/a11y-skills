@@ -1,0 +1,5 @@
+{
+  "name": "angular-clean-fixture",
+  "private": true,
+  "description": "Clean fixture for the rules-angular pack — must produce zero findings"
+}

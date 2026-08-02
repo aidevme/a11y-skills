@@ -1,0 +1,9 @@
+[
+  { "ruleId": "angular-alt-text", "file": "src/app.component.html", "line": 1, "severity": "error", "wcagRef": "1.1.1" },
+  { "ruleId": "angular-click-events-have-key-events", "file": "src/app.component.html", "line": 2, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "angular-click-events-have-key-events", "file": "src/app.component.html", "line": 3, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "angular-interactive-supports-focus", "file": "src/app.component.html", "line": 2, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "angular-interactive-supports-focus", "file": "src/app.component.html", "line": 3, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "angular-no-distracting-elements", "file": "src/app.component.html", "line": 6, "severity": "error", "wcagRef": "2.2.2" },
+  { "ruleId": "angular-no-positive-tabindex", "file": "src/app.component.html", "line": 4, "severity": "warning", "wcagRef": "2.4.3" }
+]

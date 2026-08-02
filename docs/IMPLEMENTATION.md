@@ -15,7 +15,7 @@
 | **P1 — MVP** | Core engine + CLI, React Layer 1, Markdown reporter, router/audit/init skills, minimal Layer 0 | P0 | ✅ Done (npm publish still pending — needs credentials) |
 | **P2 — v1** | SARIF + HTML reporters, Layer 2 runtime, compliance profiles, CI action + AzDO, fixtures/evals, marketplace submissions | P1 | ✅ Done (Claude Code / awesome-copilot marketplace submissions still pending — external, account-gated) |
 | **P3 — v1.5** | Static-HTML + Vue rule packs, metadata-driven A11Y.md, pre-commit hook | P2 | ✅ Done |
-| **P4 — v1.6** | Angular + Svelte rule packs, Claude Code hooks | P3 | ⬜ Not started |
+| **P4 — v1.6** | Angular + Svelte rule packs, Claude Code hooks | P3 | ✅ Done |
 | **P5 — v2** | Surface Detector, PCF adapter + domain rules, PCF/Dataverse guides | P2 (P3/P4 not required) | ⬜ Not started |
 | **P6 — v3** | Code Apps adapter, Cursor marketplace, optional VS Code extension | P5 | ⬜ Not started |
 | **P7 — v4** | Power Pages adapter (Liquid parser + live-crawl), portal guides | P5, P3 (needs `rules-static-html`) | ⬜ Not started |
@@ -277,21 +277,27 @@ Foundation for Power Pages later (§2.2 — "same walker, two consumers"), so bu
 
 ### 4.1 `packages/rules-angular` / `packages/rules-svelte`
 
-- [ ] Angular: `@angular-eslint/template` a11y rules over `*.component.html` (§2.2); detection via `angular.json`.
-- [ ] Svelte: `eslint-plugin-svelte` **plus capture the Svelte compiler's own `a11y-*` warnings** rather than re-implementing them (§2.2 note) — run a compile pass, translate warnings → findings.
-- [ ] Mapping tables + fixtures, as always.
+- [x] Angular: `@angular-eslint/template` a11y rules over `*.component.html` (§2.2); detection via `angular.json`.
+- [x] Svelte: `eslint-plugin-svelte` **plus capture the Svelte compiler's own `a11y-*` warnings** rather than re-implementing them (§2.2 note) — run a compile pass, translate warnings → findings.
+- [x] Mapping tables + fixtures, as always.
 
 ### 4.2 Claude Code hooks (§2.3d)
 
 Ship inside `.github/plugins/a11y/hooks/`, strictly opt-in via `a11y-init --with-hooks`.
 
-- [ ] **UserPromptSubmit hook**: classify prompt as UI-touching (file-type mentions, component vocabulary); if so, inject the relevant Layer 0 context (topic guide selection mirrors the router's table).
-- [ ] **PreToolUse hook**: on Edit/Write targeting UI file types (`.tsx .jsx .vue .svelte .html`, Liquid, `ControlManifest.Input.xml`), run the fast Layer 1 pass on the **pending content** (post-edit text, change-scoped per §12.3); violations → `permissionDecision: "deny"` with findings as the reason (§2.3d).
-- [ ] Performance budget: the PreToolUse pass must complete in low single-digit seconds (single-file lint, warm process if possible) — an enforcement hook that feels slow gets uninstalled.
-- [ ] Safety documentation in `docs/safety-and-guardrails.md`: exactly what the gate can block and how to bypass/disable.
-- [ ] Evals: hook denies a seeded-violation write with a useful message; allows the corrected version; never fires on non-UI files.
+- [x] **UserPromptSubmit hook**: classify prompt as UI-touching (file-type mentions, component vocabulary); if so, inject the relevant Layer 0 context (topic guide selection mirrors the router's table).
+- [x] **PreToolUse hook**: on Edit/Write targeting UI file types (`.tsx .jsx .vue .svelte .html`, Liquid, `ControlManifest.Input.xml`), run the fast Layer 1 pass on the **pending content** (post-edit text, change-scoped per §12.3); violations → `permissionDecision: "deny"` with findings as the reason (§2.3d).
+- [x] Performance budget: the PreToolUse pass must complete in low single-digit seconds (single-file lint, warm process if possible) — an enforcement hook that feels slow gets uninstalled.
+- [x] Safety documentation in `docs/safety-and-guardrails.md`: exactly what the gate can block and how to bypass/disable.
+- [x] Evals: hook denies a seeded-violation write with a useful message; allows the corrected version; never fires on non-UI files.
 
-**Phase done when:** all four framework packs pass fixtures; hooks demo cleanly in a live session and are absent unless opted into.
+**Phase done when:** all four framework packs pass fixtures; hooks demo cleanly in a live session and are absent unless opted into. **✅ Done — verified by the Phase 4 test suite (rules-angular, rules-svelte, framework-detector, core, context-gen, hooks-precommit) plus manual hook eval scenarios (`.github/plugins/a11y/hooks/evals/scenarios.md`).**
+
+*Design deviations, worth flagging:*
+
+- *Claude Code plugin hooks have no native per-project settings toggle — `hooks.json` registers unconditionally once the plugin is installed. The opt-in is enforced entirely by both hook scripts self-checking `.a11yrc.json`'s `hooksEnabled` field first and exiting as a silent no-op otherwise, rather than by the hooks being literally absent from settings. `a11y init --with-hooks` merge-patches `hooksEnabled: true` into an existing `.a11yrc.json` — the one exception to "never touch an existing config" — since it's the only mechanism that actually turns the hooks on.*
+- *`PreToolUse` cannot invoke the monorepo's packages directly (a real plugin install only ships `.github/plugins/a11y/`, no sibling `packages/*`), so it shells out to `npx --yes @aidevme/a11y audit --files <tmp>`. On a cold `npx` cache this can exceed the "low single-digit seconds" target; the hook's internal timeout is set to 15s to avoid false hard-failures on that first run, documented honestly in `docs/safety-and-guardrails.md` rather than overclaimed.*
+- *`ControlManifest.Input.xml` (PCF) is classified by the hook as a recognized UI surface but currently **allowed**, not denied, on a violation — no PCF rule pack exists until Phase 5. TC-P4.2-05 in the test plan is not fully satisfiable yet; tracked in the hooks' own eval scenarios doc.*
 
 ---
 

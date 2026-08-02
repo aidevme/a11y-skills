@@ -40,4 +40,16 @@ export const BUILTIN_PACKS: RulePackDescriptor[] = [
     frameworks: ['static-html'],
     extensions: ['.html'],
   },
+  {
+    id: 'angular',
+    module: '@aidevme/a11y-rules-angular',
+    frameworks: ['angular'],
+    extensions: ['.html'],
+  },
+  {
+    id: 'svelte',
+    module: '@aidevme/a11y-rules-svelte',
+    frameworks: ['svelte'],
+    extensions: ['.svelte'],
+  },
 ];

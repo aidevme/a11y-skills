@@ -1,0 +1,62 @@
+[
+  {
+    "ruleId": "pcf-control-missing-display-name",
+    "target": "ControlManifest.Input.xml",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-present", "selector": "control", "attribute": "display-name-key" },
+    "message": "PCF control '{{name}}' has no display-name-key — makers configuring it in Power Apps Studio get no accessible name for the control itself."
+  },
+  {
+    "ruleId": "pcf-control-missing-description",
+    "target": "ControlManifest.Input.xml",
+    "severity": "warning",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-present", "selector": "control", "attribute": "description-key" },
+    "message": "PCF control '{{name}}' has no description-key — its purpose is undocumented for makers relying on assistive tech in the configuration UI."
+  },
+  {
+    "ruleId": "pcf-property-missing-display-name",
+    "target": "ControlManifest.Input.xml",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "control-property", "check": "no-associated-label" },
+    "message": "Property '{{name}}' has no display-name-key — it exposes no accessible name to makers configuring this control."
+  },
+  {
+    "ruleId": "pcf-property-missing-description",
+    "target": "ControlManifest.Input.xml",
+    "severity": "warning",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "control-property", "check": "no-description" },
+    "message": "Property '{{name}}' has no description-key — its purpose is undocumented for makers relying on assistive tech."
+  },
+  {
+    "ruleId": "pcf-standard-control-manual-keyboard-review",
+    "target": "ControlManifest.Input.xml",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "interaction",
+    "condition": { "type": "attribute-value", "selector": "control", "attribute": "control-type", "notEquals": "virtual" },
+    "message": "Control '{{name}}' is a standard (non-virtual) control — it fully owns its own DOM/canvas rendering, so keyboard operability (SC 2.1.1) cannot be statically verified here and must be manually tested."
+  }
+]

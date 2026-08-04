@@ -41,6 +41,16 @@ const PACKS = [
     note: 'Custom DOM-tree walker (no build step) checking landmarks, alt text, label pairing, heading order, lang, and skip links.',
     file: join(repoRoot, 'packages', 'rules-static-html', 'rules-map.json'),
   },
+  {
+    title: 'rules-pcf (`@aidevme/a11y-rules-pcf`)',
+    note: 'Layer 3 domain rules (surface: pcf) via the JSON DSL engine (`@aidevme/a11y-rules-engine`): PCF manifest (ControlManifest.Input.xml) accessible-name and control-type checks, plus Dataverse form XML (*.form.xml) label checks.',
+    file: join(repoRoot, 'packages', 'rules-pcf', 'rules-map.json'),
+  },
+  {
+    title: 'rules-code-apps (`@aidevme/a11y-rules-code-apps`)',
+    note: 'Layer 3 domain rules (surface: code-apps) via the JSON DSL engine, checking TSX AST patterns for Power Apps Code Apps generated CRUD/grid screens: sortable column headers, pagination button labels, data-bound live regions. Runs alongside rules-react/rules-fluent-ui, not instead of them.',
+    file: join(repoRoot, 'packages', 'rules-code-apps', 'rules-map.json'),
+  },
 ];
 
 const NON_INTERFERENCE = new Set(['1.4.2', '2.1.2', '2.2.2', '2.3.1']);

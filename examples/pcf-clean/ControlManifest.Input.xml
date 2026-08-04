@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="Contoso" constructor="RatingControl" version="1.0.0" display-name-key="RatingControl_Display" description-key="RatingControl_Desc" control-type="virtual">
+    <property name="ratingValue" display-name-key="RatingValue_Display" description-key="RatingValue_Desc" of-type="Whole.None" usage="bound" required="true" />
+    <property name="maxRating" display-name-key="MaxRating_Display" description-key="MaxRating_Desc" of-type="Whole.None" usage="input" required="false" />
+    <resources>
+      <code path="index.ts" order="1" />
+    </resources>
+  </control>
+</manifest>

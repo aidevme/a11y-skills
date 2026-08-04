@@ -1,0 +1,6 @@
+{
+  "name": "code-apps-seeded-fixture",
+  "dependencies": {
+    "react": "^18.0.0"
+  }
+}

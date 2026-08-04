@@ -1,0 +1,92 @@
+{
+  "control-missing-display-name": {
+    "ruleId": "pcf-control-missing-display-name",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "PCF control manifests need a display-name-key so the control has an accessible name."
+  },
+  "control-missing-description": {
+    "ruleId": "pcf-control-missing-description",
+    "severity": "warning",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "PCF control manifests need a description-key documenting the control's purpose."
+  },
+  "property-missing-display-name": {
+    "ruleId": "pcf-property-missing-display-name",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Bound/input/output properties need a display-name-key so they have an accessible name."
+  },
+  "property-missing-description": {
+    "ruleId": "pcf-property-missing-description",
+    "severity": "warning",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Properties need a description-key documenting their purpose."
+  },
+  "standard-control-manual-keyboard-review": {
+    "ruleId": "pcf-standard-control-manual-keyboard-review",
+    "severity": "warning",
+    "wcagRef": "2.1.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "interaction",
+    "summary": "Standard (non-virtual) controls own their own DOM/canvas rendering and need manual keyboard-operability review."
+  },
+  "dataverse-tab-label-empty": {
+    "ruleId": "dataverse-tab-label-empty",
+    "severity": "error",
+    "wcagRef": "2.4.6",
+    "wcagLevel": "AA",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Dataverse form tabs need a non-empty label."
+  },
+  "dataverse-section-label-empty": {
+    "ruleId": "dataverse-section-label-empty",
+    "severity": "warning",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Dataverse form sections need a non-empty label."
+  },
+  "dataverse-cell-label-empty": {
+    "ruleId": "dataverse-cell-label-empty",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Dataverse form fields need a non-empty label."
+  },
+  "dataverse-section-label-hidden": {
+    "ruleId": "dataverse-section-label-hidden",
+    "severity": "warning",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "A section with showlabel=\"false\" hides its grouping label from every user, not only visually."
+  },
+  "dataverse-cell-label-hidden": {
+    "ruleId": "dataverse-cell-label-hidden",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "A field cell with showlabel=\"false\" hides its label from every user, not only visually."
+  }
+}

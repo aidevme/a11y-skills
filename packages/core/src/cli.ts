@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { isAbsolute, join, relative, resolve } from 'node:path';
 import { aggregate } from './aggregate.js';
 import {
   applyBaseline,
@@ -13,7 +13,8 @@ import { ConfigError, loadConfig, type A11yConfig } from './config.js';
 import { listUiFiles } from './files.js';
 import { enrich, type Finding, type RawFinding } from './finding.js';
 import { applyProfile } from './profiles.js';
-import { BUILTIN_PACKS } from './registry.js';
+import { BUILTIN_PACKS, SURFACE_RULE_PACKS } from './registry.js';
+import { RuleEngineError } from '@aidevme/a11y-rules-engine';
 
 export class CliError extends Error {}
 
@@ -141,11 +142,31 @@ function resolveRoot(path: string): string {
   return root;
 }
 
+/** Root-relative posix path (RawFinding.file) -> absolute native path, for surface lookup. */
+function toAbsolute(root: string, relPosixPath: string): string {
+  return join(root, ...relPosixPath.split('/'));
+}
+
+/** Path-separator-tolerant "is this file under this directory" check (`--files` values may use either separator). */
+function isUnderRoot(file: string, dir: string): boolean {
+  const rel = relative(dir, file);
+  return rel === '' || (!rel.startsWith('..') && !isAbsolute(rel));
+}
+
 /**
- * Shared pipeline: detect → static packs → optional runtime → enrich →
- * profile → aggregate. When `filesOverride` is given (the pre-commit gate),
+ * Shared pipeline: detect surfaces + frameworks → static packs (Layer 1) →
+ * domain rules (Layer 3) → optional runtime (Layer 2) → enrich → profile →
+ * aggregate. When `filesOverride` is given (the pre-commit gate / hooks),
  * each pack only sees the subset of those files matching its own
  * extensions, instead of scanning the whole project tree.
+ *
+ * Surfaces (DESIGN §2.1) are detected once across the whole `root`, always
+ * returning at least one entry. Layer 1 packs still run framework-detection
+ * against the whole root (unchanged from pre-P5 behavior — the Framework
+ * axis is orthogonal to Surface, §2.2) but each resulting finding is tagged
+ * with whichever detected surface's subtree its file falls under, via
+ * longest-matching-root. Layer 3 (SURFACE_RULE_PACKS) runs once per
+ * surface entry, scoped to that entry's own subtree.
  */
 async function collectFindings(
   root: string,
@@ -154,9 +175,12 @@ async function collectFindings(
   filesOverride?: string[],
 ): Promise<{ findings: Finding[]; frameworks: string[] }> {
   const { detectFrameworks } = await import('@aidevme/a11y-framework-detector');
+  const { detectSurfaces, surfaceForFile } = await import('@aidevme/a11y-surface-detector');
   const detection = detectFrameworks(root);
+  const surfaces = detectSurfaces(root);
 
-  const raw: RawFinding[] = [];
+  const enriched: Finding[] = [];
+
   for (const pack of BUILTIN_PACKS) {
     if (!pack.frameworks.some((f) => detection.frameworks.includes(f))) continue;
     if (pack.requiresFluent && !detection.fluent) continue;
@@ -167,7 +191,28 @@ async function collectFindings(
     const mod = (await import(pack.module)) as {
       runRules: (files: string[], projectRoot: string) => Promise<unknown[]>;
     };
-    raw.push(...((await mod.runRules(files, root)) as RawFinding[]));
+    const packRaw = (await mod.runRules(files, root)) as RawFinding[];
+    for (const f of packRaw) {
+      const surface = surfaceForFile(toAbsolute(root, f.file), surfaces);
+      enriched.push(...enrich([f], surface));
+    }
+  }
+
+  for (const surfacePack of SURFACE_RULE_PACKS) {
+    for (const s of surfaces) {
+      if (s.surface !== surfacePack.surface) continue;
+      const files = filesOverride
+        ? filesOverride.filter(
+            (f) => surfacePack.extensions.some((ext) => f.endsWith(ext)) && isUnderRoot(f, s.root),
+          )
+        : listUiFiles(s.root, surfacePack.extensions);
+      if (files.length === 0) continue;
+      const mod = (await import(surfacePack.module)) as {
+        runRules: (files: string[], projectRoot: string) => Promise<unknown[]>;
+      };
+      const packRaw = (await mod.runRules(files, root)) as RawFinding[];
+      enriched.push(...enrich(packRaw, s.surface));
+    }
   }
 
   if (opts.runtime) {
@@ -175,16 +220,15 @@ async function collectFindings(
     if (urls.length === 0)
       throw new CliError('--runtime needs at least one --url or runtime.urls in .a11yrc.json');
     const { runRuntime } = await import('@aidevme/a11y-runtime-axe');
-    raw.push(
-      ...((await runRuntime({
-        urls,
-        viewports: config.runtime?.viewports,
-        crawl: opts.crawl,
-      })) as RawFinding[]),
-    );
+    const runtimeRaw = (await runRuntime({
+      urls,
+      viewports: config.runtime?.viewports,
+      crawl: opts.crawl,
+    })) as RawFinding[];
+    enriched.push(...enrich(runtimeRaw, 'web-app'));
   }
 
-  const profiled = applyProfile(enrich(raw, 'web-app'), config);
+  const profiled = applyProfile(enriched, config);
   const baselined = applyBaseline(profiled, loadBaselineEntries(root));
   return { findings: aggregate(baselined), frameworks: detection.frameworks };
 }
@@ -277,12 +321,19 @@ async function init(args: string[]): Promise<number> {
   const root = resolveRoot(opts.path);
   const config = loadConfig(root);
   const { detectFrameworks } = await import('@aidevme/a11y-framework-detector');
+  const { detectSurfaces } = await import('@aidevme/a11y-surface-detector');
   const { runInit } = await import('@aidevme/a11y-context-gen');
-  const result = await runInit(root, detectFrameworks(root), {
-    profile: config.profile,
-    withPrecommit: opts.withPrecommit,
-    withHooks: opts.withHooks,
-  });
+  const detection = detectFrameworks(root);
+  const surfaces = detectSurfaces(root).map((s) => s.surface);
+  const result = await runInit(
+    root,
+    { ...detection, surfaces },
+    {
+      profile: config.profile,
+      withPrecommit: opts.withPrecommit,
+      withHooks: opts.withHooks,
+    },
+  );
   for (const f of result.created) console.log(`created   ${f}`);
   for (const f of result.updated) console.log(`updated   ${f}`);
   for (const f of result.unchanged) console.log(`unchanged ${f}`);
@@ -330,7 +381,7 @@ export async function main(argv: string[]): Promise<number> {
     }
     throw new CliError(`unknown command: ${cmd}\n${HELP}`);
   } catch (err) {
-    if (err instanceof CliError || err instanceof ConfigError) {
+    if (err instanceof CliError || err instanceof ConfigError || err instanceof RuleEngineError) {
       console.error(`a11y: ${err.message}`);
     } else {
       console.error(`a11y: unexpected error: ${(err as Error).message}`);

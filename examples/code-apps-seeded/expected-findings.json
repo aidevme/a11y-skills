@@ -1,0 +1,5 @@
+[
+  { "ruleId": "code-apps-grid-header-missing-sort-state", "file": "src/AccountsGrid.tsx", "line": 18, "severity": "warning", "wcagRef": "4.1.2" },
+  { "ruleId": "code-apps-pagination-button-missing-label", "file": "src/AccountsGrid.tsx", "line": 32, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "code-apps-datagrid-missing-live-region", "file": "src/AccountsGrid.tsx", "line": 1, "severity": "warning", "wcagRef": "4.1.3" }
+]

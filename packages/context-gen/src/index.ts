@@ -4,6 +4,8 @@ import { join } from 'node:path';
 export interface FrameworkDetection {
   frameworks: string[];
   fluent: boolean;
+  /** Detected Surface ids (DESIGN §2.1) — orthogonal to frameworks; defaults to [] when the caller doesn't supply it. */
+  surfaces?: string[];
 }
 
 export interface RunInitOptions {
@@ -47,7 +49,9 @@ const PROFILE_DESCRIPTIONS: Record<RunInitOptions['profile'], string> = {
  * this file can never drift from what the audit actually enforces.
  */
 interface PackSection {
-  frameworkId: string;
+  /** Exactly one of frameworkId/surfaceId is set — the Framework and Surface axes (DESIGN §2.1/§2.2) are orthogonal detection sources. */
+  frameworkId?: string;
+  surfaceId?: string;
   title: string;
   mapRelativePath: string;
   requiresFluent?: boolean;
@@ -76,6 +80,16 @@ const PACK_SECTIONS: PackSection[] = [
     frameworkId: 'static-html',
     title: 'Static HTML',
     mapRelativePath: '../../rules-static-html/rules-map.json',
+  },
+  {
+    surfaceId: 'pcf',
+    title: 'PCF Controls & Dataverse Forms',
+    mapRelativePath: '../../rules-pcf/rules-map.json',
+  },
+  {
+    surfaceId: 'code-apps',
+    title: 'Power Apps Code Apps',
+    mapRelativePath: '../../rules-code-apps/rules-map.json',
   },
 ];
 
@@ -119,8 +133,10 @@ function generatedBlock(detection: FrameworkDetection, profile: RunInitOptions['
   lines.push('- Maintain a logical heading hierarchy — no skipped levels (SC 1.3.1).');
   lines.push('- Non-interference floor — never violate, at any profile: no keyboard traps (SC 2.1.2), no auto-playing audio without a stop (SC 1.4.2), nothing flashing more than 3×/s (SC 2.3.1), no moving content that cannot be paused (SC 2.2.2).');
 
+  const surfaces = detection.surfaces ?? [];
   for (const section of PACK_SECTIONS) {
-    if (!detection.frameworks.includes(section.frameworkId)) continue;
+    if (section.frameworkId && !detection.frameworks.includes(section.frameworkId)) continue;
+    if (section.surfaceId && !surfaces.includes(section.surfaceId)) continue;
     if (section.requiresFluent && !detection.fluent) continue;
     const map = loadRuleMapSafe(section.mapRelativePath);
     if (!map) continue;
@@ -146,6 +162,8 @@ function defaultConfig(
     ...(detection.frameworks.includes('angular') ? ['angular'] : []),
     ...(detection.frameworks.includes('svelte') ? ['svelte'] : []),
     ...(detection.frameworks.includes('static-html') ? ['static-html'] : []),
+    ...((detection.surfaces ?? []).includes('pcf') ? ['pcf'] : []),
+    ...((detection.surfaces ?? []).includes('code-apps') ? ['code-apps'] : []),
   ];
   const config: Record<string, unknown> = { rulePacks, profile, wcagVersion: '2.2' };
   if (withHooks) config.hooksEnabled = true;

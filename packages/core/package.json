@@ -24,12 +24,16 @@
     "@aidevme/a11y-reporter-markdown": "0.0.1",
     "@aidevme/a11y-reporter-sarif": "0.0.1",
     "@aidevme/a11y-rules-angular": "0.0.1",
+    "@aidevme/a11y-rules-code-apps": "0.0.1",
+    "@aidevme/a11y-rules-engine": "0.0.1",
     "@aidevme/a11y-rules-fluent-ui": "0.0.1",
+    "@aidevme/a11y-rules-pcf": "0.0.1",
     "@aidevme/a11y-rules-react": "0.0.1",
     "@aidevme/a11y-rules-static-html": "0.0.1",
     "@aidevme/a11y-rules-svelte": "0.0.1",
     "@aidevme/a11y-rules-vue": "0.0.1",
     "@aidevme/a11y-runtime-axe": "0.0.1",
+    "@aidevme/a11y-surface-detector": "0.0.1",
     "ajv": "^8.17.0"
   }
 }

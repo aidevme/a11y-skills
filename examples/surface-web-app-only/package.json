@@ -1,0 +1,6 @@
+{
+  "name": "web-app-only-fixture",
+  "dependencies": {
+    "react": "^18.0.0"
+  }
+}

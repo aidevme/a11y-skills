@@ -1,0 +1,15 @@
+{
+  "name": "@aidevme/a11y-rules-engine",
+  "version": "0.0.1",
+  "description": "Layer 3 (domain rule) JSON DSL engine for the a11y-skills audit toolkit — rule loading, {{placeholder}} substitution, and surface-scoped condition evaluation. Standalone (no dependency on core) so surface rule packs can depend on it without a build cycle.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  }
+}

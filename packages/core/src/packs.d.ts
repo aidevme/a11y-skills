@@ -13,6 +13,16 @@ declare module '@aidevme/a11y-framework-detector' {
   export function detectFrameworks(projectRoot: string): FrameworkDetection;
 }
 
+declare module '@aidevme/a11y-surface-detector' {
+  export type Surface = 'pcf' | 'code-apps' | 'power-pages' | 'web-app';
+  export interface SurfaceDetection {
+    surface: Surface;
+    root: string;
+  }
+  export function detectSurfaces(projectRoot: string): SurfaceDetection[];
+  export function surfaceForFile(file: string, surfaces: SurfaceDetection[]): Surface;
+}
+
 declare module '@aidevme/a11y-rules-react' {
   export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
 }
@@ -34,6 +44,14 @@ declare module '@aidevme/a11y-rules-angular' {
 }
 
 declare module '@aidevme/a11y-rules-svelte' {
+  export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
+}
+
+declare module '@aidevme/a11y-rules-pcf' {
+  export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
+}
+
+declare module '@aidevme/a11y-rules-code-apps' {
   export function runRules(files: string[], projectRoot: string): Promise<unknown[]>;
 }
 
@@ -66,7 +84,7 @@ declare module '@aidevme/a11y-context-gen' {
   }
   export function runInit(
     projectRoot: string,
-    detection: { frameworks: string[]; fluent: boolean },
+    detection: { frameworks: string[]; fluent: boolean; surfaces?: string[] },
     options: { profile: 'strict' | 'standard' | 'mvp'; withPrecommit: boolean; withHooks: boolean },
   ): Promise<InitResult>;
 }

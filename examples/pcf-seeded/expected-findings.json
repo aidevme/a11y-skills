@@ -1,0 +1,12 @@
+[
+  { "ruleId": "pcf-control-missing-display-name", "file": "ControlManifest.Input.xml", "line": 3, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "pcf-control-missing-description", "file": "ControlManifest.Input.xml", "line": 3, "severity": "warning", "wcagRef": "4.1.2" },
+  { "ruleId": "pcf-property-missing-display-name", "file": "ControlManifest.Input.xml", "line": 4, "severity": "error", "wcagRef": "4.1.2" },
+  { "ruleId": "pcf-property-missing-description", "file": "ControlManifest.Input.xml", "line": 4, "severity": "warning", "wcagRef": "4.1.2" },
+  { "ruleId": "pcf-standard-control-manual-keyboard-review", "file": "ControlManifest.Input.xml", "line": 3, "severity": "warning", "wcagRef": "2.1.1" },
+  { "ruleId": "dataverse-tab-label-empty", "file": "EntityForm.form.xml", "line": 5, "severity": "error", "wcagRef": "2.4.6" },
+  { "ruleId": "dataverse-section-label-empty", "file": "EntityForm.form.xml", "line": 33, "severity": "warning", "wcagRef": "1.3.1" },
+  { "ruleId": "dataverse-cell-label-empty", "file": "EntityForm.form.xml", "line": 45, "severity": "error", "wcagRef": "3.3.2" },
+  { "ruleId": "dataverse-section-label-hidden", "file": "EntityForm.form.xml", "line": 10, "severity": "warning", "wcagRef": "1.3.1" },
+  { "ruleId": "dataverse-cell-label-hidden", "file": "EntityForm.form.xml", "line": 16, "severity": "error", "wcagRef": "3.3.2" }
+]

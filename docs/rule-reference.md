@@ -157,4 +157,31 @@ Custom DOM-tree walker (no build step) checking landmarks, alt text, label pairi
 | `html-lang-missing` | error | 3.1.1 | A | 2.0 | semantic | The html element must declare a lang attribute so assistive tech uses the right pronunciation/voice. |
 | `html-skip-link` | error | 2.4.1 | A | 2.0 | semantic | Pages with repeated navigation need a mechanism (e.g. a skip link) to bypass it. |
 
-_112 rules total. ⚠NI marks WCAG non-interference criteria (never profile-relaxed, never baseline-eligible)._
+## rules-pcf (`@aidevme/a11y-rules-pcf`)
+
+Layer 3 domain rules (surface: pcf) via the JSON DSL engine (`@aidevme/a11y-rules-engine`): PCF manifest (ControlManifest.Input.xml) accessible-name and control-type checks, plus Dataverse form XML (*.form.xml) label checks.
+
+| Rule | Severity | WCAG SC | Level | Since | Category | Summary |
+| --- | --- | --- | --- | --- | --- | --- |
+| `dataverse-cell-label-empty` | error | 3.3.2 | A | 2.0 | semantic | Dataverse form fields need a non-empty label. |
+| `dataverse-cell-label-hidden` | error | 3.3.2 | A | 2.0 | semantic | A field cell with showlabel="false" hides its label from every user, not only visually. |
+| `dataverse-section-label-empty` | warning | 1.3.1 | A | 2.0 | semantic | Dataverse form sections need a non-empty label. |
+| `dataverse-section-label-hidden` | warning | 1.3.1 | A | 2.0 | semantic | A section with showlabel="false" hides its grouping label from every user, not only visually. |
+| `dataverse-tab-label-empty` | error | 2.4.6 | AA | 2.0 | semantic | Dataverse form tabs need a non-empty label. |
+| `pcf-control-missing-description` | warning | 4.1.2 | A | 2.0 | semantic | PCF control manifests need a description-key documenting the control's purpose. |
+| `pcf-control-missing-display-name` | error | 4.1.2 | A | 2.0 | semantic | PCF control manifests need a display-name-key so the control has an accessible name. |
+| `pcf-property-missing-description` | warning | 4.1.2 | A | 2.0 | semantic | Properties need a description-key documenting their purpose. |
+| `pcf-property-missing-display-name` | error | 4.1.2 | A | 2.0 | semantic | Bound/input/output properties need a display-name-key so they have an accessible name. |
+| `pcf-standard-control-manual-keyboard-review` | warning | 2.1.1 | A | 2.0 | interaction | Standard (non-virtual) controls own their own DOM/canvas rendering and need manual keyboard-operability review. |
+
+## rules-code-apps (`@aidevme/a11y-rules-code-apps`)
+
+Layer 3 domain rules (surface: code-apps) via the JSON DSL engine, checking TSX AST patterns for Power Apps Code Apps generated CRUD/grid screens: sortable column headers, pagination button labels, data-bound live regions. Runs alongside rules-react/rules-fluent-ui, not instead of them.
+
+| Rule | Severity | WCAG SC | Level | Since | Category | Summary |
+| --- | --- | --- | --- | --- | --- | --- |
+| `code-apps-datagrid-missing-live-region` | warning | 4.1.3 | AA | 2.1 | semantic | A data-bound screen needs an aria-live/status/alert region to announce loading and empty states. |
+| `code-apps-grid-header-missing-sort-state` | warning | 4.1.2 | A | 2.0 | semantic | A clickable/sortable column header needs aria-sort so its sort state is programmatically determinable. |
+| `code-apps-pagination-button-missing-label` | error | 4.1.2 | A | 2.0 | semantic | A numeric-only page button needs an aria-label describing which page it navigates to. |
+
+_125 rules total. ⚠NI marks WCAG non-interference criteria (never profile-relaxed, never baseline-eligible)._

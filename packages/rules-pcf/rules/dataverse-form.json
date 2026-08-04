@@ -1,0 +1,62 @@
+[
+  {
+    "ruleId": "dataverse-tab-label-empty",
+    "target": ".form.xml",
+    "severity": "error",
+    "wcagRef": "2.4.6",
+    "wcagLevel": "AA",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-present", "selector": "tab > labels > label", "attribute": "description" },
+    "message": "A form tab has an empty label — tabs are exposed to assistive tech as navigable regions and need a descriptive name (SC 2.4.6)."
+  },
+  {
+    "ruleId": "dataverse-section-label-empty",
+    "target": ".form.xml",
+    "severity": "warning",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-present", "selector": "section > labels > label", "attribute": "description" },
+    "message": "A form section has an empty label — sections group related fields, and an empty group name breaks the info/relationships conveyed to assistive tech (SC 1.3.1)."
+  },
+  {
+    "ruleId": "dataverse-cell-label-empty",
+    "target": ".form.xml",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-present", "selector": "cell > labels > label", "attribute": "description" },
+    "message": "A form field's label is empty — every field needs a non-empty label or instruction (SC 3.3.2)."
+  },
+  {
+    "ruleId": "dataverse-section-label-hidden",
+    "target": ".form.xml",
+    "severity": "warning",
+    "wcagRef": "1.3.1",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-value", "selector": "section", "attribute": "showlabel", "equals": "false" },
+    "message": "Section '{{name}}' has showlabel=\"false\" — its grouping label is hidden from all users, not just visually, removing the info/relationships structure assistive tech relies on (SC 1.3.1)."
+  },
+  {
+    "ruleId": "dataverse-cell-label-hidden",
+    "target": ".form.xml",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "pcf",
+    "category": "semantic",
+    "condition": { "type": "attribute-value", "selector": "cell", "attribute": "showlabel", "equals": "false" },
+    "message": "A field's cell has showlabel=\"false\" — its label is hidden from all users, not just visually, leaving the control unlabeled for assistive tech (SC 3.3.2)."
+  }
+]

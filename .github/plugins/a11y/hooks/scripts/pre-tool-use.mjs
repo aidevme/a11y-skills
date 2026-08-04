@@ -15,9 +15,13 @@ import { dirname, extname, join } from 'node:path';
 import { execSync } from 'node:child_process';
 
 const LINTABLE_EXTENSIONS = ['.tsx', '.jsx', '.vue', '.svelte', '.html'];
-// Recognized as UI surfaces but no rule pack ships for them yet (PCF lands in
-// Phase 5, Liquid templates aren't in scope) — classify, but don't block.
-const RECOGNIZED_UNLINTABLE_SUFFIXES = ['.liquid', 'ControlManifest.Input.xml'];
+// Matched as a literal filename suffix, not just an extension — rules-pcf's
+// DSL rules key off these exact tails (a bare ".xml" isn't specific enough
+// to tell a PCF manifest apart from a Dataverse form export).
+const LINTABLE_SUFFIXES = ['ControlManifest.Input.xml', '.form.xml'];
+// Recognized as a UI surface but no rule pack ships for it yet (Power Pages
+// Liquid templates land in Phase 7) — classify, but don't block.
+const RECOGNIZED_UNLINTABLE_SUFFIXES = ['.liquid'];
 
 const BOM = String.fromCharCode(0xfeff);
 
@@ -54,9 +58,15 @@ function deny(reason) {
 }
 
 function classify(filePath) {
+  if (LINTABLE_SUFFIXES.some((s) => filePath.endsWith(s))) return 'lintable';
   if (RECOGNIZED_UNLINTABLE_SUFFIXES.some((s) => filePath.endsWith(s))) return 'unlintable';
   if (LINTABLE_EXTENSIONS.includes(extname(filePath))) return 'lintable';
   return 'irrelevant';
+}
+
+/** The temp file must keep whichever suffix rules-pcf's DSL rules key off, not just the bare extension. */
+function tempSuffix(filePath) {
+  return LINTABLE_SUFFIXES.find((s) => filePath.endsWith(s)) ?? extname(filePath);
 }
 
 /** Reconstructs the file's content as it would read after the pending edit lands. */
@@ -126,8 +136,8 @@ async function main() {
     return;
   }
 
-  const ext = extname(filePath);
-  const tempPath = join(dirname(filePath), `.a11y-pending-${process.pid}-${Date.now()}${ext}`);
+  const suffix = tempSuffix(filePath);
+  const tempPath = join(dirname(filePath), `.a11y-pending-${process.pid}-${Date.now()}-${suffix}`);
   writeFileSync(tempPath, pendingContent, 'utf8');
 
   let findings;

@@ -1,6 +1,6 @@
 ---
 name: a11y-audit
-description: Audits React, Fluent UI v9, and (in later versions) Vue, Angular, Svelte, static HTML, PCF, Power Apps Code Apps and Power Pages for WCAG 2.2 compliance. Runs static rules via the @aidevme/a11y CLI and summarizes findings with proposed fixes. Trigger on "/a11y-audit", "check accessibility", "audit ARIA", "WCAG compliance".
+description: Audits React, Fluent UI v9, Vue, Angular, Svelte, static HTML, PCF controls/Dataverse forms, and Power Apps Code Apps for WCAG 2.2 compliance (Power Pages arrives in a later version). Runs static rules via the @aidevme/a11y CLI and summarizes findings with proposed fixes. Trigger on "/a11y-audit", "check accessibility", "audit ARIA", "WCAG compliance".
 allowed-tools: Read Bash Glob Grep
 ---
 

@@ -13,7 +13,7 @@
 | `file` | Path relative to the audited root (posix separators) |
 | `range` | `{ startLine, startCol, endLine?, endCol? }`, 1-based |
 | `layer` | 1 = static, 2 = runtime (v1+), 3 = domain rules (v2+) |
-| `surface` | `web-app` (P1); `pcf` / `code-apps` / `power-pages` later |
+| `surface` | `web-app`, `pcf` (`packages/rules-pcf`), or `code-apps` (`packages/rules-code-apps`); `power-pages` is detected but has no rule pack until a later version |
 | `framework` | e.g. `react` |
 | `fingerprint` | Line-drift-resilient identity (rule + file + context hash) — used by baselines |
 | `context` | Trimmed source line the finding refers to |

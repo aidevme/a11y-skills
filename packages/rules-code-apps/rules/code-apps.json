@@ -1,0 +1,53 @@
+[
+  {
+    "ruleId": "code-apps-grid-header-missing-sort-state",
+    "target": ".tsx",
+    "severity": "warning",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "code-apps",
+    "category": "semantic",
+    "condition": {
+      "type": "jsx-element-attribute-present",
+      "tagNames": ["th"],
+      "roleValues": ["columnheader"],
+      "hasAnyAttr": ["onClick", "onSortClick", "onSort"],
+      "requireAttr": "aria-sort"
+    },
+    "message": "Column header '{{name}}' has a sort handler but no aria-sort — screen reader users can't tell whether the column is sortable or which direction it's currently sorted."
+  },
+  {
+    "ruleId": "code-apps-pagination-button-missing-label",
+    "target": ".tsx",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "surface": "code-apps",
+    "category": "semantic",
+    "condition": {
+      "type": "jsx-element-content-shape",
+      "tagNames": ["button", "Button"],
+      "contentShape": "numeric-only",
+      "requireAttr": "aria-label"
+    },
+    "message": "A page-number button showing only '{{name}}' has no aria-label — its purpose (go to page {{name}}) is not announced to assistive tech."
+  },
+  {
+    "ruleId": "code-apps-datagrid-missing-live-region",
+    "target": ".tsx",
+    "severity": "warning",
+    "wcagRef": "4.1.3",
+    "wcagLevel": "AA",
+    "wcagVersion": "2.1",
+    "surface": "code-apps",
+    "category": "semantic",
+    "condition": {
+      "type": "file-contains-without",
+      "requiresPattern": "\\.map\\(",
+      "missingPattern": "aria-live|role=[\"']status[\"']|role=[\"']alert[\"']"
+    },
+    "message": "This screen renders a data list (.map) but has no aria-live/status/alert region anywhere in the file — loading and empty-state changes won't be announced to screen reader users."
+  }
+]

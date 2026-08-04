@@ -102,4 +102,47 @@ describe('a11y audit CLI', () => {
   it('unknown option → exit 2', async () => {
     expect((await run(['audit', '--frob'])).code).toBe(2);
   });
+
+  it('TC-P5.3-05: a real PCF project audits Layer 1 + Layer 3 findings in one run, correctly surfaced', async () => {
+    const res = await run(['audit', fixture('pcf-seeded'), '--format', 'json', '--fail-on', 'never']);
+    expect(res.code).toBe(0);
+    const findings = JSON.parse(res.stdout) as { ruleId: string; surface: string; layer: number }[];
+    expect(findings.length).toBe(10);
+    expect(findings.every((f) => f.surface === 'pcf')).toBe(true);
+    expect(findings.every((f) => f.layer === 3)).toBe(true);
+  });
+
+  it('--files scopes Layer 3 PCF rules to just the given file, regardless of path separator style', async () => {
+    const manifestPosix = join(fixture('pcf-seeded'), 'ControlManifest.Input.xml').replace(/\\/g, '/');
+    const res = await run(['audit', fixture('pcf-seeded'), '--files', manifestPosix, '--format', 'json', '--fail-on', 'never']);
+    const findings = JSON.parse(res.stdout) as { file: string }[];
+    expect(findings.length).toBe(5);
+    expect(findings.every((f) => f.file === 'ControlManifest.Input.xml')).toBe(true);
+  });
+
+  it('TC-P5.1-05 / AC-P5-1: multi-surface monorepo tags each finding with its own subtree surface in one audit', async () => {
+    const res = await run(['audit', fixture('surface-monorepo'), '--format', 'json', '--fail-on', 'never']);
+    const findings = JSON.parse(res.stdout) as { ruleId: string; surface: string; file: string }[];
+    const web = findings.find((f) => f.ruleId === 'react-alt-text');
+    const pcf = findings.find((f) => f.ruleId === 'pcf-control-missing-display-name');
+    expect(web).toMatchObject({ surface: 'web-app', file: 'apps/web/src/App.tsx' });
+    expect(pcf).toMatchObject({ surface: 'pcf', file: 'controls/my-pcf/ControlManifest.Input.xml' });
+  });
+
+  it('TC-P6.1-05: a Code Apps project also matching react runs both packs with no duplicate findings', async () => {
+    const res = await run(['audit', fixture('code-apps-seeded'), '--format', 'json', '--fail-on', 'never']);
+    const findings = JSON.parse(res.stdout) as { ruleId: string; layer: number; surface: string }[];
+    expect(findings.map((f) => f.ruleId).sort()).toEqual(
+      [
+        'code-apps-datagrid-missing-live-region',
+        'code-apps-grid-header-missing-sort-state',
+        'code-apps-pagination-button-missing-label',
+        'react-alt-text',
+      ].sort(),
+    );
+    expect(findings.find((f) => f.ruleId === 'react-alt-text')).toMatchObject({ layer: 1, surface: 'code-apps' });
+    expect(findings.every((f) => f.layer === 1 || f.layer === 3)).toBe(true);
+    // No duplicate rule ids — every defect is reported exactly once.
+    expect(new Set(findings.map((f) => f.ruleId)).size).toBe(findings.length);
+  });
 });

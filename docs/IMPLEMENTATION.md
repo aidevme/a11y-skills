@@ -16,8 +16,8 @@
 | **P2 — v1** | SARIF + HTML reporters, Layer 2 runtime, compliance profiles, CI action + AzDO, fixtures/evals, marketplace submissions | P1 | ✅ Done (Claude Code / awesome-copilot marketplace submissions still pending — external, account-gated) |
 | **P3 — v1.5** | Static-HTML + Vue rule packs, metadata-driven A11Y.md, pre-commit hook | P2 | ✅ Done |
 | **P4 — v1.6** | Angular + Svelte rule packs, Claude Code hooks | P3 | ✅ Done |
-| **P5 — v2** | Surface Detector, PCF adapter + domain rules, PCF/Dataverse guides | P2 (P3/P4 not required) | ⬜ Not started |
-| **P6 — v3** | Code Apps adapter, Cursor marketplace, optional VS Code extension | P5 | ⬜ Not started |
+| **P5 — v2** | Surface Detector, PCF adapter + domain rules, PCF/Dataverse guides | P2 (P3/P4 not required) | ✅ Done |
+| **P6 — v3** | Code Apps adapter, Cursor marketplace, optional VS Code extension | P5 | ✅ Done (Code Apps adapter) (Cursor marketplace submission still pending — external, account-gated; VS Code extension deliberately not built, no user feedback requesting it) |
 | **P7 — v4** | Power Pages adapter (Liquid parser + live-crawl), portal guides | P5, P3 (needs `rules-static-html`) | ⬜ Not started |
 
 Cross-cutting rule for every phase: **all layers emit the shared `Finding` schema (§2), and every new rule carries `wcagRef`/`wcagLevel`/`wcagVersion` metadata (§5)** — no exceptions, since profiles (§2.3b), reporters (§6), and the generated docs (§8) all read that metadata.
@@ -305,19 +305,27 @@ Ship inside `.github/plugins/a11y/hooks/`, strictly opt-in via `a11y-init --with
 
 ### 5.1 `packages/surface-detector`
 
-- [ ] Implement `SurfaceAdapter.detect()` heuristics per §2.1 table: PCF = `ControlManifest.Input.xml`; Code Apps = `power.config.json`/PAC markers (P6 activates it); Power Pages = `power-pages/**`/`.portalconfig.json`/Liquid files (P7 activates it); Web App = fallback.
-- [ ] Multi-surface repos (e.g. monorepo with a PCF control and a web app): detection is per-directory-tree, results are a list, each audited with its own adapter.
+- [x] Implement `SurfaceAdapter.detect()` heuristics per §2.1 table: PCF = `ControlManifest.Input.xml`; Code Apps = `power.config.json`/PAC markers (P6 activates it); Power Pages = `power-pages/**`/`.portalconfig.json`/Liquid files (P7 activates it); Web App = fallback.
+- [x] Multi-surface repos (e.g. monorepo with a PCF control and a web app): detection is per-directory-tree, results are a list, each audited with its own adapter.
 
 ### 5.2 PCF adapter + `packages/rules-pcf` (Layer 3 first use)
 
-- [ ] **JSON DSL engine in `core`** (deferred from P1 since nothing needed it until now): rule shape per §5 (`ruleId`, `target`, `severity`, WCAG fields, `condition`, `message` with `{{placeholders}}`), plus the **`surface` key** (§2.1 design implication — engine is multi-tenant, each surface contributes `rules/<surface>.json`).
-- [ ] Condition evaluators for XML targets: XPath-like selectors over `ControlManifest.Input.xml` and Dataverse form XML; evaluator types `control-property`, `attribute-present`, `attribute-value`, extensible via registry.
-- [ ] Rule content (§5 sizing: ~12 PCF manifest + ~8 Dataverse form XML): missing accessible name on bound properties, no keyboard handler declared for canvas-drawn controls (§2.1), form XML label/description gaps.
-- [ ] Layer 2 for PCF: axe against the local test harness (`npm run start:watch`, §2.1) — reuse the generic URL mode with a documented launch recipe.
-- [ ] Flesh out the `a11y-pcf` topic skill (guide content replaces the P1 stub) + new `dataverse-forms` reference guide content.
-- [ ] Fixtures: seeded-violation manifests + form XML with exact expected findings.
+- [x] **JSON DSL engine** (deferred from P1 since nothing needed it until now): rule shape per §5 (`ruleId`, `target`, `severity`, WCAG fields, `condition`, `message` with `{{placeholders}}`), plus the **`surface` key** (§2.1 design implication — engine is multi-tenant, each surface contributes `rules/<surface>.json`).
+- [x] Condition evaluators for XML targets: selectors (CSS, evaluated over a linkedom-parsed XML DOM) over `ControlManifest.Input.xml` and Dataverse form XML; evaluator types `control-property`, `attribute-present`, `attribute-value`, extensible via registry.
+- [x] Rule content: missing accessible name on bound properties, standard (non-virtual) controls flagged for manual keyboard review (§2.1), form XML label/description gaps.
+- [x] Layer 2 for PCF: axe against the local test harness — reuse the generic URL mode with a documented launch recipe (`a11y-pcf` skill).
+- [x] Flesh out the `a11y-pcf` topic skill (guide content replaces the P1 stub) + new `dataverse-forms` reference guide content.
+- [x] Fixtures: seeded-violation manifests + form XML with exact expected findings.
 
-**Phase done when:** a real PCF project audits across Layers 1–3 with one command; DSL engine loads multiple surface rule files simultaneously.
+**Phase done when:** a real PCF project audits across Layers 1–3 with one command; DSL engine loads multiple surface rule files simultaneously. **✅ Done — verified by the Phase 5 test suite (surface-detector, rules-engine, rules-pcf, core's rules-engine/cli/context-gen suites) plus a manual end-to-end hook run against a real fixture project.**
+
+*Design deviations, worth flagging:*
+
+- *The JSON DSL engine shipped as its own standalone package, `packages/rules-engine`, rather than living inside `core` as originally planned. Reason: `core` dynamically imports every rule pack (including `rules-pcf`) but must never be statically imported BY a pack — that's the existing "packs never depend on core" rule from P1–P4, kept to avoid a build cycle. Since `rules-pcf` needs to actually call the engine's `loadRuleFile`/`evaluateRules` at runtime (not just have ambient types for it), the engine had to live somewhere neither core nor any pack, so both could depend on it directly. `core` now has a normal static dependency on `@aidevme/a11y-rules-engine`; the engine itself has zero dependencies of its own.*
+- *Selectors for the XML condition evaluators (`attribute-present`, `attribute-value`) are plain CSS selectors evaluated via linkedom's `querySelectorAll` (already a repo dependency, via `rules-static-html`), not a literal XPath implementation — DESIGN's "XPath-like" phrasing is satisfied in spirit (element/attribute selection) without adding a new parsing dependency. linkedom doesn't track source line numbers, so line lookup is done by zipping parsed-element order against raw-text tag-occurrence order (XML has no reordering, so document order and source order always agree).*
+- *Rule count landed at 5 PCF manifest + 5 Dataverse form XML (10 total), short of the aspirational "~12 + ~8" from DESIGN §5. Reason: that sizing was a pre-implementation estimate: the real, stable PCF manifest and Dataverse form XML schemas don't expose that many genuinely distinct, statically-checkable, well-grounded accessibility-relevant attributes without inventing dubious checks — and this project's standing rule is no rule ships without empirical, defensible grounding. All 10 shipped rules are checked against real, long-stable schema elements (PCF's `control-type`/`display-name-key`/`description-key`, Dataverse form XML's `showlabel`/`<labels><label description>`).*
+- *Dataverse form XML files are recognized by the a11y-skills-specific `*.form.xml` filename convention (documented in the `dataverse-forms` reference guide), not by parsing real Dataverse solution-export folder structures (`Entities/<entity>/FormXml/<formid>/...`) — that's a materially bigger scope (solution unpacking, GUID-keyed folders) deliberately left out.*
+- *Closed a Phase 4 gap as a side effect: the `PreToolUse` hook previously classified `ControlManifest.Input.xml` as "recognized but unlintable" (TC-P4.2-05) because no PCF pack existed yet. It now genuinely lints PCF manifests and `.form.xml` files and denies violating edits — verified end-to-end against a real fixture project. One new, narrower gap replaces it: the hook can't catch violations in a control's manifest on the very first `Write` that creates it from nothing, since surface detection needs a real on-disk marker file and can't see pending content. Documented in `.github/plugins/a11y/hooks/evals/scenarios.md` and `docs/safety-and-guardrails.md`.*
 
 ---
 
@@ -325,16 +333,21 @@ Ship inside `.github/plugins/a11y/hooks/`, strictly opt-in via `a11y-init --with
 
 ### 6.1 Code Apps adapter + `packages/rules-code-apps`
 
-- [ ] Detection per §2.1 (PAC markers); Layer 1 = existing react+fluent packs; Layer 2 = local dev server URL.
-- [ ] Layer 3 DSL rules for generated CRUD/grid patterns (§2.1): sortable column headers announced, pagination controls labeled, empty-state/loading announcements on data-bound screens.
-- [ ] Decide (Open Question 2 follow-up) whether to add a `pac code run` launch recipe or stay URL-only.
+- [x] Detection per §2.1 (PAC markers); Layer 1 = existing react+fluent packs; Layer 2 = local dev server URL.
+- [x] Layer 3 DSL rules for generated CRUD/grid patterns (§2.1): sortable column headers announced, pagination controls labeled, empty-state/loading announcements on data-bound screens.
+- [x] Decide (Open Question 2 follow-up) whether to add a `pac code run` launch recipe or stay URL-only. **Decision: stay URL-only**, consistent with OQ2's resolution at P2.3 (the generic `--runtime --url` mode) and the same treatment PCF got in P5 — documented as a `pac code run` → point `--url` at the printed address recipe (`a11y-audit/references/rule-packs.md`), no new CLI surface.
 
 ### 6.2 Cursor marketplace + optional VS Code extension
 
-- [ ] Cursor: submit when their marketplace opens (tracked task, external dependency).
-- [ ] VS Code extension **only if** tasks.json + SARIF Viewer prove insufficient (§10 — deliberately deferred): thin CLI→diagnostics bridge, no logic of its own (§4 packaging principle). Gate this on real user feedback, not completeness instinct.
+- [ ] Cursor: submit when their marketplace opens (tracked task, external dependency — no repo-side action possible; `.cursor-plugin/marketplace.json` has been ready since P0).
+- [ ] VS Code extension **only if** tasks.json + SARIF Viewer prove insufficient (§10 — deliberately deferred): thin CLI→diagnostics bridge, no logic of its own (§4 packaging principle). Gate this on real user feedback, not completeness instinct. **Not built — no user feedback yet requesting it; building it speculatively would violate the phase's own explicit instruction.**
 
-**Phase done when:** a Code Apps sample project audits end-to-end including the CRUD rules.
+**Phase done when:** a Code Apps sample project audits end-to-end including the CRUD rules. **✅ Done (6.1) — verified by the Phase 6 test suite (rules-code-apps, core's cli/context-gen suites) including an end-to-end audit proving Layer 1 (react-alt-text) and Layer 3 (three code-apps-\* rules) fire together on one file with zero duplicate findings (TC-P6.1-05).** 6.2 remains open: the Cursor submission is external/account-gated, and the VS Code extension is intentionally not built pending real user feedback.
+
+*Design deviations, worth flagging:*
+
+- *The three Code Apps Layer 3 rules are implemented against genuinely checkable, generic JSX/TSX structural patterns (a clickable column header, a numeric-only button, a `.map()`-rendered list) rather than any Power-Apps-Code-Apps-specific generated boilerplate. Reason: unlike PCF's manifest schema or Dataverse form XML (long-stable, well-documented platform primitives), the exact shape of Code Apps' code-gen output is a comparatively new and less certain surface — inventing detection heuristics tied to assumed generator output would risk being either wrong or quickly stale. The shipped rules instead encode WCAG anti-patterns that are true of *any* React grid/pagination/data-list implementation, Code-Apps-generated or hand-written, and are scoped to the `code-apps` surface (only fire when `power.config.json` is present) so they don't start firing on every React app.*
+- *New condition evaluator types (`jsx-element-attribute-present`, `jsx-element-content-shape`, `file-contains-without`) were added to the DSL engine's registry, built on the real TypeScript compiler API (`ts.createSourceFile` with `ts.ScriptKind.TSX`) rather than regex/string matching against JSX — regex over JSX/TSX is fragile (nested braces, string literals containing `<`/`>`, etc.) in a way it isn't for PCF's simpler XML attribute checks, so this pack pulls in `typescript` as a real dependency (already the pinned 5.9.3 used to build the whole monorepo) rather than trying to avoid it.*
 
 ---
 

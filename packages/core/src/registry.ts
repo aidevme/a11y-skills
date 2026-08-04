@@ -53,3 +53,32 @@ export const BUILTIN_PACKS: RulePackDescriptor[] = [
     extensions: ['.svelte'],
   },
 ];
+
+/**
+ * Layer 3 (domain rule engine) packs — keyed by Surface, not Framework
+ * (DESIGN §2.1, orthogonal to BUILTIN_PACKS above). Each module exports
+ * `runRules(files, projectRoot)` like a framework pack, but internally
+ * loads its own DSL rule file(s) via core's rules-engine.
+ */
+export interface SurfaceRulePackDescriptor {
+  id: string;
+  module: string;
+  surface: string;
+  /** Filename suffixes this pack's runRules() understands (matched via String.endsWith — not necessarily a file extension, e.g. "ControlManifest.Input.xml"). */
+  extensions: string[];
+}
+
+export const SURFACE_RULE_PACKS: SurfaceRulePackDescriptor[] = [
+  {
+    id: 'pcf',
+    module: '@aidevme/a11y-rules-pcf',
+    surface: 'pcf',
+    extensions: ['ControlManifest.Input.xml', '.form.xml'],
+  },
+  {
+    id: 'code-apps',
+    module: '@aidevme/a11y-rules-code-apps',
+    surface: 'code-apps',
+    extensions: ['.tsx'],
+  },
+];

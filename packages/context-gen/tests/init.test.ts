@@ -132,6 +132,40 @@ describe('a11y init (context-gen)', () => {
     expect(content).toMatch(/`svelte-no-target-blank`/);
   });
 
+  it('TC-P5: PCF surface detection generates a metadata-driven PCF section and rulePacks entry', async () => {
+    const dir = tmpProject();
+    await runInit(dir, { frameworks: [], fluent: false, surfaces: ['pcf'] }, STANDARD);
+    const content = readFileSync(join(dir, 'A11Y.md'), 'utf8');
+    expect(content).toContain('## PCF Controls & Dataverse Forms');
+    expect(content).toMatch(/`pcf-control-missing-display-name`/);
+    const config = JSON.parse(readFileSync(join(dir, '.a11yrc.json'), 'utf8'));
+    expect(config.rulePacks).toContain('pcf');
+  });
+
+  it('no PCF section when the pcf surface is not detected', async () => {
+    const dir = tmpProject();
+    await runInit(dir, REACT_ONLY, STANDARD);
+    const content = readFileSync(join(dir, 'A11Y.md'), 'utf8');
+    expect(content).not.toContain('PCF Controls & Dataverse Forms');
+  });
+
+  it('TC-P6: Code Apps surface detection generates a metadata-driven section and rulePacks entry', async () => {
+    const dir = tmpProject();
+    await runInit(dir, { frameworks: ['react'], fluent: false, surfaces: ['code-apps'] }, STANDARD);
+    const content = readFileSync(join(dir, 'A11Y.md'), 'utf8');
+    expect(content).toContain('## Power Apps Code Apps');
+    expect(content).toMatch(/`code-apps-grid-header-missing-sort-state`/);
+    const config = JSON.parse(readFileSync(join(dir, '.a11yrc.json'), 'utf8'));
+    expect(config.rulePacks).toContain('code-apps');
+  });
+
+  it('no Power Apps Code Apps section when the code-apps surface is not detected', async () => {
+    const dir = tmpProject();
+    await runInit(dir, REACT_ONLY, STANDARD);
+    const content = readFileSync(join(dir, 'A11Y.md'), 'utf8');
+    expect(content).not.toContain('Power Apps Code Apps');
+  });
+
   it('TC-P3.3: static-html detection generates a metadata-driven Static HTML section', async () => {
     const dir = tmpProject();
     await runInit(dir, STATIC_HTML_ONLY, STANDARD);

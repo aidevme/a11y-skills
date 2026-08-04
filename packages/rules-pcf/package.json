@@ -1,0 +1,21 @@
+{
+  "name": "@aidevme/a11y-rules-pcf",
+  "version": "0.0.1",
+  "description": "PCF manifest + Dataverse form XML Layer 3 domain rule pack for the a11y-skills audit toolkit",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "rules",
+    "rules-map.json"
+  ],
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "@aidevme/a11y-rules-engine": "0.0.1",
+    "linkedom": "^0.18.13"
+  }
+}

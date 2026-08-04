@@ -1,0 +1,6 @@
+{
+  "name": "code-apps-clean-fixture",
+  "dependencies": {
+    "react": "^18.0.0"
+  }
+}

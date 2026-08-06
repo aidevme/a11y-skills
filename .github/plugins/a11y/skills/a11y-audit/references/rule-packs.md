@@ -21,6 +21,14 @@ Full generated reference: `docs/rule-reference.md` in the repo. Fix patterns by 
 - `fluent-image-alt` — add `alt` to `<Image>`.
 - `fluent-spinner-label` — add `label="…"` so loading is announced.
 - `fluent-link-accessible-name` — give `<Link>` text content or `aria-label`.
+- `fluent-menubutton-accessible-name` — icon-only `<MenuButton>` needs `aria-label` describing the menu.
+- `fluent-dialog-title` — add a `<DialogTitle>` inside the dialog, or `aria-label` on `<Dialog>`.
+- `fluent-checkbox-label` — add `label="…"` to `<Checkbox>`, wrap it in `Field`, or set `aria-label`.
+- `fluent-dropdown-label` — pair a `<Label htmlFor>` with a matching `id`, wrap in `Field`, or set `aria-label`.
+- `fluent-input-label` — same as `fluent-dropdown-label`, for `<Input>`.
+- `fluent-radiogroup-label` — set `aria-label`/`aria-labelledby` on `<RadioGroup>`, or wrap in `Field`.
+- `fluent-spinbutton-label` — same as `fluent-dropdown-label`, for `<SpinButton>`.
+- `fluent-textarea-label` — same as `fluent-dropdown-label`, for `<Textarea>`.
 
 ## code-apps-* (Power Apps Code Apps generated CRUD/grid patterns, Layer 3)
 

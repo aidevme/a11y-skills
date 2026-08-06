@@ -38,11 +38,19 @@ Custom rules for Fluent UI v9 component semantics; runs only when Fluent is dete
 | Rule | Severity | WCAG SC | Level | Since | Category | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
 | `fluent-button-accessible-name` | error | 4.1.2 | A | 2.0 | semantic | Icon-only Fluent <Button> requires aria-label or aria-labelledby. |
+| `fluent-checkbox-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <Checkbox> requires a label prop, aria-label/aria-labelledby, or a Field wrapper. |
 | `fluent-dialog-aria-modal` | error | 4.1.2 | A | 2.0 | semantic | Fluent <Dialog> manages aria-modal itself; overriding it to false breaks modal semantics. |
+| `fluent-dialog-title` | error | 4.1.2 | A | 2.0 | semantic | Fluent <Dialog> requires a <DialogTitle> or aria-label/aria-labelledby for an accessible name. |
+| `fluent-dropdown-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <Dropdown> requires an associated Label, aria-label, aria-labelledby, or Field wrapper. |
 | `fluent-field-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <Field> requires a label prop to label its wrapped control. |
 | `fluent-image-alt` | error | 1.1.1 | A | 2.0 | semantic | Fluent <Image> requires an alt prop (or explicit presentation role). |
+| `fluent-input-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <Input> requires an associated Label, aria-label, aria-labelledby, or Field wrapper. |
 | `fluent-link-accessible-name` | error | 2.4.4 | A | 2.0 | semantic | Fluent <Link> requires content or aria-label. |
+| `fluent-menubutton-accessible-name` | error | 4.1.2 | A | 2.0 | semantic | Icon-only Fluent <MenuButton> requires aria-label or aria-labelledby. |
+| `fluent-radiogroup-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <RadioGroup> requires a group label via aria-label, aria-labelledby, or a Field wrapper. |
+| `fluent-spinbutton-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <SpinButton> requires an associated Label, aria-label, aria-labelledby, or Field wrapper. |
 | `fluent-spinner-label` | warning | 4.1.2 | A | 2.0 | semantic | Fluent <Spinner> needs a label or aria-label so its purpose is announced. |
+| `fluent-textarea-label` | error | 3.3.2 | A | 2.0 | semantic | Fluent <Textarea> requires an associated Label, aria-label, aria-labelledby, or Field wrapper. |
 
 ## rules-vue (`@aidevme/a11y-rules-vue`)
 
@@ -184,4 +192,4 @@ Layer 3 domain rules (surface: code-apps) via the JSON DSL engine, checking TSX 
 | `code-apps-grid-header-missing-sort-state` | warning | 4.1.2 | A | 2.0 | semantic | A clickable/sortable column header needs aria-sort so its sort state is programmatically determinable. |
 | `code-apps-pagination-button-missing-label` | error | 4.1.2 | A | 2.0 | semantic | A numeric-only page button needs an aria-label describing which page it navigates to. |
 
-_125 rules total. ⚠NI marks WCAG non-interference criteria (never profile-relaxed, never baseline-eligible)._
+_133 rules total. ⚠NI marks WCAG non-interference criteria (never profile-relaxed, never baseline-eligible)._

@@ -154,6 +154,17 @@ it('seeded fixture yields exactly the expected findings', async () => {
 | TC-P1.4-07 | Fluent import aliased (`import { Button as Btn }`) misused | Finding still fires (alias tracked) |
 | TC-P1.4-08 | Non-Fluent React project | Pack does not run at all (detector gate) |
 | TC-P1.4-09 | Correct Fluent usage across all covered components | Zero findings |
+| TC-P1.4-10 | `<Checkbox />` — no `label` prop, no `aria-label`/`aria-labelledby`, not wrapped in `Field` | `fluent-checkbox-label`, error, 3.3.2 |
+| TC-P1.4-11 | `<Dropdown />` — no `Label htmlFor`/`aria-label`/`aria-labelledby`/`Field` wrap | `fluent-dropdown-label`, error, 3.3.2 |
+| TC-P1.4-12 | Standalone `<Input />` (not wrapped in `Field`) with no label | `fluent-input-label`, error, 3.3.2 |
+| TC-P1.4-13 | `<RadioGroup />` — no group `aria-label`/`aria-labelledby`/`Field` wrap | `fluent-radiogroup-label`, error, 3.3.2 |
+| TC-P1.4-14 | `<SpinButton />` — no associated label | `fluent-spinbutton-label`, error, 3.3.2 |
+| TC-P1.4-15 | `<Textarea />` — no associated label | `fluent-textarea-label`, error, 3.3.2 |
+| TC-P1.4-16 | Icon-only `<MenuButton icon={<X/>} />` without `aria-label` | `fluent-menubutton-accessible-name`, error, 4.1.2 |
+| TC-P1.4-17 | `<Dialog>` with no `<DialogTitle>` descendant and no `aria-label`/`aria-labelledby` | `fluent-dialog-title`, error, 4.1.2 |
+| TC-P1.4-18 | `<Checkbox>`/`<Input>`/`<RadioGroup>`/`<Textarea>` wrapped in `<Field label="…">` | Label-requirement rule does **not** fire (`Field`-wrap exemption) |
+| TC-P1.4-19 | Sibling `<Label htmlFor="x">` + `<Dropdown id="x">`/`<Input id="x">`/`<SpinButton id="x">` | Label-requirement rule does **not** fire (`id` match), regardless of source order (collected file-wide) |
+| TC-P1.4-20 | `<Dialog>` containing a nested `<DialogTitle>` (inside `DialogSurface`/`DialogBody`) | `fluent-dialog-title` does **not** fire |
 
 #### 1.5 Markdown reporter
 

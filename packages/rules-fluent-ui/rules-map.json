@@ -52,5 +52,77 @@
     "wcagVersion": "2.0",
     "category": "semantic",
     "summary": "Fluent <Link> requires content or aria-label."
+  },
+  "menubutton-accessible-name": {
+    "ruleId": "fluent-menubutton-accessible-name",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Icon-only Fluent <MenuButton> requires aria-label or aria-labelledby."
+  },
+  "dialog-title": {
+    "ruleId": "fluent-dialog-title",
+    "severity": "error",
+    "wcagRef": "4.1.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <Dialog> requires a <DialogTitle> or aria-label/aria-labelledby for an accessible name."
+  },
+  "checkbox-label": {
+    "ruleId": "fluent-checkbox-label",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <Checkbox> requires a label prop, aria-label/aria-labelledby, or a Field wrapper."
+  },
+  "dropdown-label": {
+    "ruleId": "fluent-dropdown-label",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <Dropdown> requires an associated Label, aria-label, aria-labelledby, or Field wrapper."
+  },
+  "input-label": {
+    "ruleId": "fluent-input-label",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <Input> requires an associated Label, aria-label, aria-labelledby, or Field wrapper."
+  },
+  "radiogroup-label": {
+    "ruleId": "fluent-radiogroup-label",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <RadioGroup> requires a group label via aria-label, aria-labelledby, or a Field wrapper."
+  },
+  "spinbutton-label": {
+    "ruleId": "fluent-spinbutton-label",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <SpinButton> requires an associated Label, aria-label, aria-labelledby, or Field wrapper."
+  },
+  "textarea-label": {
+    "ruleId": "fluent-textarea-label",
+    "severity": "error",
+    "wcagRef": "3.3.2",
+    "wcagLevel": "A",
+    "wcagVersion": "2.0",
+    "category": "semantic",
+    "summary": "Fluent <Textarea> requires an associated Label, aria-label, aria-labelledby, or Field wrapper."
   }
 }

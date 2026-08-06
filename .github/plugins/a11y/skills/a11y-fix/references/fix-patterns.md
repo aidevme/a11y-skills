@@ -104,6 +104,53 @@ Each entry: what's wrong, the minimal fix, and a worked example. See also `a11y-
 + <Field label="Email"><Input /></Field>
 ```
 
+## fluent-menubutton-accessible-name
+
+**Wrong:** icon-only Fluent `<MenuButton>` with no accessible name.
+**Fix:** add `aria-label` describing what the menu contains — not "expand" or the chevron.
+
+```diff
+- <MenuButton icon={<MoreIcon />} />
++ <MenuButton icon={<MoreIcon />} aria-label="More actions" />
+```
+
+## fluent-dialog-title
+
+**Wrong:** Fluent `<Dialog>` with no `<DialogTitle>` descendant and no `aria-label`/`aria-labelledby`.
+**Fix:** add a `<DialogTitle>` inside `DialogSurface`/`DialogBody` (wires `aria-labelledby` automatically), or set `aria-label` directly on `<Dialog>` if a visible title isn't part of the design.
+
+```diff
+- <Dialog>
+-   <DialogSurface><DialogBody>Are you sure?</DialogBody></DialogSurface>
+- </Dialog>
++ <Dialog>
++   <DialogSurface><DialogBody>
++     <DialogTitle>Confirm deletion</DialogTitle>
++     Are you sure?
++   </DialogBody></DialogSurface>
++ </Dialog>
+```
+
+## fluent-checkbox-label / fluent-dropdown-label / fluent-input-label / fluent-radiogroup-label / fluent-spinbutton-label / fluent-textarea-label
+
+**Wrong:** the component has no `aria-label`/`aria-labelledby`, isn't wrapped in a `<Field label="...">`, and (for Checkbox) has no `label` prop.
+**Fix:** wrap in `Field` (simplest, works for Checkbox/Input/RadioGroup/Textarea), or pair a `<Label htmlFor>` with a matching `id` (the common pattern for Dropdown/SpinButton), or set `aria-label`/`aria-labelledby` directly. Never use `placeholder` as a substitute for a label.
+
+```diff
+- <Dropdown>
++ <Label htmlFor="favorite-fruit">Favorite fruit</Label>
++ <Dropdown id="favorite-fruit">
+    <Option>Apple</Option>
+  </Dropdown>
+```
+
+```diff
+- <RadioGroup>
++ <RadioGroup aria-label="Favorite fruit">
+    <Radio value="apple" label="Apple" />
+  </RadioGroup>
+```
+
 ## runtime-reflow / runtime-text-spacing / runtime-orientation (Layer 2)
 
 These have no single-line fix — they're layout issues. Point the user at the offending selector (in `context`) and the CSS rule causing it (fixed widths, `overflow: hidden` with fixed heights, or orientation-based `display: none`); propose a responsive alternative (max-width instead of width, min-height instead of fixed height, remove orientation media-query hiding).

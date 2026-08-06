@@ -42,17 +42,17 @@ describe('rules-fluent-ui', () => {
   });
 
   it('TC-P1.4-06: local component named Button does not trigger fluent rules', async () => {
-    // The seeded fixture renders a local <Button icon="plus" /> on line 27;
+    // The seeded fixture renders a local <Button icon="plus" /> on line 49;
     // the exact-findings assertion above already excludes it — this pins the
     // intent explicitly.
     const findings = await auditFixture('fluent-seeded');
-    expect(findings.some((f) => f.line === 27)).toBe(false);
+    expect(findings.some((f) => f.line === 49)).toBe(false);
   });
 
   it('TC-P1.4-07: aliased Fluent import (Button as Btn) still fires', async () => {
     const findings = await auditFixture('fluent-seeded');
     expect(
-      findings.some((f) => f.ruleId === 'fluent-button-accessible-name' && f.line === 20),
+      findings.some((f) => f.ruleId === 'fluent-button-accessible-name' && f.line === 29),
     ).toBe(true);
   });
 

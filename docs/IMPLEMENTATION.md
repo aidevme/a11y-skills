@@ -116,6 +116,8 @@ The differentiator pack (§1). Custom ESLint rules, since no upstream plugin kno
 
 **Done when:** Fluent fixtures (e.g. `Dialog` with clobbered `aria-modal` per §9) yield exact findings; pack is skipped entirely on non-Fluent projects.
 
+*Growth note (post-P1): the pack grew from 6 to 14 rules once `docs/FLUENT_UI_ACCESSIBILITY.md` (a full transcription of Fluent's own component-level accessibility docs) was compared against rule coverage — see `references/fluent-v9-a11y-notes.md`'s component/rule table for the current mapping. Added: a shared label-requirement check (`Field` wrap, sibling `Label htmlFor` + matching `id`, or `aria-label`/`aria-labelledby`) for `Checkbox`, `Dropdown`, `Input`, `RadioGroup`, `SpinButton`, `Textarea`; an accessible-name rule for `MenuButton` (previously slipped through `fluent-button-accessible-name`'s import-name match, since `MenuButton` is a distinct import); and `fluent-dialog-title` (a `Dialog` needs a `DialogTitle` descendant or `aria-label`, alongside the pre-existing `aria-modal` guard). Still open, tracked as candidates in that same table: `Combobox`, `Menu`/`TabList`/`DataGrid`, `Tooltip`.*
+
 ### 1.5 `reporters/markdown`
 
 - [x] Pure transform `Finding[] + RunMeta → string` — **no independent logic** (§6): grouping severity → WCAG SC → file; per-finding: message, file:line, WCAG ref link (to w3.org Understanding page), remediation line.
